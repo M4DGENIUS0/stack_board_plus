@@ -1,9 +1,9 @@
-name: flex_board
+name: stack_board_plus
 description: "An advanced, stable tool for building photo editing and canvas-based apps with layers, transformations, and interactive elements."
-version: 0.0.1
-homepage: https://github.com/M4DGENIUS0/flex_board
-repository: https://github.com/M4DGENIUS0/flex_board
-issue_tracker: https://github.com/M4DGENIUS0/flex_board/issues
+version: 1.0.0
+homepage: https://github.com/M4DGENIUS0/stack_board_plus
+repository: https://github.com/M4DGENIUS0/stack_board_plus
+issue_tracker: https://github.com/M4DGENIUS0/stack_board_plus/issues
 
 
 

@@ -462,6 +462,7 @@ class _StackItemCaseState extends State<StackItemCase> {
               const SizedBox(width: 8),
           ],
           // Delete handle (always visible)
+          if ((item.size.width + item.size.height < style.buttonSize * 6) == false)
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(

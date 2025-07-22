@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -113,10 +114,18 @@ class ImageItemContent extends StackItemContent {
       );
     }
 
+    /// Reset loading state for new content
+    _isLoaded = false;
+    _hasError = false;
+    _isLoading = false;
+    _loadingCompleter?.complete();
+    _loadingCompleter = null;
+
     /// Handle different image sources and detect SVG content
     if (svgString != null) {
-      /// Direct SVG string provided
+      /// Direct SVG string provided 
       _isSvg = true;
+      _isLoaded = true; 
       _svgWidget = SvgPicture.string(
         svgString!,
         width: width,
@@ -128,7 +137,6 @@ class ImageItemContent extends StackItemContent {
         matchTextDirection: matchTextDirection,
       );
     } else if (url != null) {
-      /// Check if URL points to an SVG
       _isSvg = _isSvgUrl(url!);
       if (_isSvg) {
         _svgWidget = SvgPicture.network(
@@ -142,7 +150,6 @@ class ImageItemContent extends StackItemContent {
           matchTextDirection: matchTextDirection,
         );
       } else {
-        /// Regular image from URL
         if (url!.startsWith('http') || url!.startsWith('https')) {
           _image = NetworkImage(url!);
         } else {
@@ -150,7 +157,6 @@ class ImageItemContent extends StackItemContent {
         }
       }
     } else if (assetName != null) {
-      /// Check if asset is an SVG
       _isSvg = _isSvgPath(assetName!);
       if (_isSvg) {
         _svgWidget = SvgPicture.asset(
@@ -165,9 +171,10 @@ class ImageItemContent extends StackItemContent {
         );
       } else {
         _image = AssetImage(assetName!);
+        _isLoaded = true;
       }
     } else if (file != null) {
-      /// Check if file is an SVG
+      // Check if file is an SVG
       _isSvg = _isSvgPath(file!.path);
       if (_isSvg) {
         _svgWidget = SvgPicture.file(
@@ -187,8 +194,8 @@ class ImageItemContent extends StackItemContent {
       /// Check if bytes represent an SVG
       _isSvg = _isSvgBytes(bytes!);
       if (_isSvg) {
-        /// Convert bytes to string for SVG
         final svgContent = utf8.decode(bytes!);
+        _isLoaded = true; 
         _svgWidget = SvgPicture.string(
           svgContent,
           width: width,
@@ -201,6 +208,7 @@ class ImageItemContent extends StackItemContent {
         );
       } else {
         _image = MemoryImage(bytes!);
+        _isLoaded = true;
       }
     }
   }
@@ -235,6 +243,12 @@ class ImageItemContent extends StackItemContent {
   late ImageProvider? _image;
   SvgPicture? _svgWidget;
   bool _isSvg = false;
+  
+  /// Loading state management
+  bool _isLoaded = false;
+  bool _hasError = false;
+  bool _isLoading = false;
+  Completer<void>? _loadingCompleter;
 
   String? url;
   String? assetName;
@@ -276,6 +290,13 @@ class ImageItemContent extends StackItemContent {
     _svgWidget = null;
     _isSvg = false;
     
+    /// Reset loading state
+    _isLoaded = false;
+    _hasError = false;
+    _isLoading = false;
+    _loadingCompleter?.complete();
+    _loadingCompleter = null;
+    
     _init();
   }
 
@@ -284,9 +305,74 @@ class ImageItemContent extends StackItemContent {
     return _buildWidgetWithShimmer();
   }
 
-    /// Create shimmer placeholder
+  /// Create shimmer placeholder
   Widget _buildWidgetWithShimmer() {
-    Widget shimmerPlaceholder = Container(
+    // If already loaded and no error, return the content directly
+    if (_isLoaded && !_hasError) {
+      return _buildContentWidget();
+    }
+
+    // If there's an error, show error widget
+    if (_hasError) {
+      return _buildErrorWidget();
+    }
+
+    // For SVG content
+    if (_isSvg && _svgWidget != null) {
+      if (svgString != null) {
+        // Direct SVG string - mark as loaded immediately
+        _markAsLoaded();
+        return _svgWidget!;
+      } else {
+        // Network or asset SVG - use cached loading state
+        return _buildSvgWithLoadingState();
+      }
+    } 
+    // For regular images
+    else if (_image != null) {
+      return _buildImageWithLoadingState();
+    } 
+    // Fallback for no content
+    else {
+      _markAsError();
+      return _buildErrorWidget();
+    }
+  }
+
+  Widget _buildContentWidget() {
+    if (_isSvg && _svgWidget != null) {
+      return _svgWidget!;
+    } else if (_image != null) {
+      return Image(
+        image: _image!,
+        width: width,
+        height: height,
+        fit: fit,
+        repeat: repeat,
+        matchTextDirection: matchTextDirection,
+        gaplessPlayback: gaplessPlayback,
+        isAntiAlias: isAntiAlias,
+        filterQuality: filterQuality,
+        color: color,
+        colorBlendMode: colorBlendMode,
+        semanticLabel: semanticLabel,
+        excludeFromSemantics: excludeFromSemantics,
+      );
+    }
+    return _buildErrorWidget();
+  }
+
+  Widget _buildErrorWidget() {
+    return Container(
+      width: width,
+      height: height,
+      color: Colors.grey[300],
+      child: const Icon(Icons.error, color: Colors.red),
+    );
+  }
+
+  Widget _buildShimmerPlaceholder() {
+    return Container(
       width: width,
       height: height,
       child: Shimmer.fromColors(
@@ -300,133 +386,150 @@ class ImageItemContent extends StackItemContent {
         ),
       ),
     );
+  }
 
-    if (_isSvg && _svgWidget != null) {
-      /// For SVG content
-      if (svgString != null) {
-        /// Direct SVG string - no loading needed
-        return _svgWidget!;
-      } else {
-        /// Network or asset SVG - use placeholder while loading
-        return FutureBuilder<bool>(
-          future: _checkSvgLoaded(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return shimmerPlaceholder;
-            }
-            return _svgWidget!;
-          },
-        );
-      }
-    } else if (_image != null) {
-      /// For regular images
-      if (_image is NetworkImage) {
-        /// Network image with loading state
-        return Image(
-          image: _image!,
-          width: width,
-          height: height,
-          fit: fit,
-          repeat: repeat,
-          matchTextDirection: matchTextDirection,
-          gaplessPlayback: gaplessPlayback,
-          isAntiAlias: isAntiAlias,
-          filterQuality: filterQuality,
-          color: color,
-          colorBlendMode: colorBlendMode,
-          semanticLabel: semanticLabel,
-          excludeFromSemantics: excludeFromSemantics,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return shimmerPlaceholder;
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: width,
-              height: height,
-              color: Colors.grey[300],
-              child: const Icon(Icons.error, color: Colors.red),
-            );
-          },
-        );
-      } else if (_image is FileImage) {
-        /// File image with loading state
-        return FutureBuilder<bool>(
-          future: _checkFileExists(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return shimmerPlaceholder;
-            }
-            if (snapshot.hasError || !(snapshot.data ?? false)) {
-              return Container(
-                width: width,
-                height: height,
-                color: Colors.grey[300],
-                child: const Icon(Icons.error, color: Colors.red),
-              );
-            }
-            return Image(
-              image: _image!,
-              width: width,
-              height: height,
-              fit: fit,
-              repeat: repeat,
-              matchTextDirection: matchTextDirection,
-              gaplessPlayback: gaplessPlayback,
-              isAntiAlias: isAntiAlias,
-              filterQuality: filterQuality,
-              color: color,
-              colorBlendMode: colorBlendMode,
-              semanticLabel: semanticLabel,
-              excludeFromSemantics: excludeFromSemantics,
-            );
-          },
-        );
-      } else {
-        //// Asset or Memory image - minimal loading state
-        return Image(
-          image: _image!,
-          width: width,
-          height: height,
-          fit: fit,
-          repeat: repeat,
-          matchTextDirection: matchTextDirection,
-          gaplessPlayback: gaplessPlayback,
-          isAntiAlias: isAntiAlias,
-          filterQuality: filterQuality,
-          color: color,
-          colorBlendMode: colorBlendMode,
-          semanticLabel: semanticLabel,
-          excludeFromSemantics: excludeFromSemantics,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) return child;
-            return frame == null ? shimmerPlaceholder : child;
-          },
-        );
-      }
-    } else {
-      return Container(
+  /// Use a one-time check that doesn't re-trigger on rebuilds
+  Widget _buildSvgWithLoadingState() {
+    if (!_isLoading && !_isLoaded) {
+      _startSvgLoading();
+    }
+    
+    if (_isLoaded) {
+      return _svgWidget!;
+    }
+    
+    return _buildShimmerPlaceholder();
+  }
+
+  /// Network image with proper loading state management
+  Widget _buildImageWithLoadingState() {
+    if (_image is NetworkImage) {
+      return Image(
+        image: _image!,
         width: width,
         height: height,
-        color: Colors.grey[300],
-        child: const Icon(Icons.error, color: Colors.red),
+        fit: fit,
+        repeat: repeat,
+        matchTextDirection: matchTextDirection,
+        gaplessPlayback: gaplessPlayback,
+        isAntiAlias: isAntiAlias,
+        filterQuality: filterQuality,
+        color: color,
+        colorBlendMode: colorBlendMode,
+        semanticLabel: semanticLabel,
+        excludeFromSemantics: excludeFromSemantics,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _markAsLoaded();
+            });
+            return child;
+          }
+          return _buildShimmerPlaceholder();
+        },
+        errorBuilder: (context, error, stackTrace) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _markAsError();
+          });
+          return _buildErrorWidget();
+        },
+      );
+    } else if (_image is FileImage) {
+      if (!_isLoading && !_isLoaded) {
+        _startFileLoading();
+      }
+      
+      if (_isLoaded) {
+        return _buildContentWidget();
+      } else if (_hasError) {
+        return _buildErrorWidget();
+      }
+      
+      return _buildShimmerPlaceholder();
+    } else {
+      return Image(
+        image: _image!,
+        width: width,
+        height: height,
+        fit: fit,
+        repeat: repeat,
+        matchTextDirection: matchTextDirection,
+        gaplessPlayback: gaplessPlayback,
+        isAntiAlias: isAntiAlias,
+        filterQuality: filterQuality,
+        color: color,
+        colorBlendMode: colorBlendMode,
+        semanticLabel: semanticLabel,
+        excludeFromSemantics: excludeFromSemantics,
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded || frame != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _markAsLoaded();
+            });
+            return child;
+          }
+          return _buildShimmerPlaceholder();
+        },
+        errorBuilder: (context, error, stackTrace) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _markAsError();
+          });
+          return _buildErrorWidget();
+        },
       );
     }
   }
 
-  //// Simulate loading check for SVG content
-  Future<bool> _checkSvgLoaded() async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    return true;
+  void _startSvgLoading() {
+    if (_isLoading) return;
+    
+    _isLoading = true;
+    _loadingCompleter = Completer<void>();
+    
+    Future.delayed(const Duration(milliseconds: 50)).then((_) {
+      if (!_loadingCompleter!.isCompleted) {
+        _markAsLoaded();
+      }
+    });
   }
 
-  Future<bool> _checkFileExists() async {
+  void _startFileLoading() {
+    if (_isLoading) return;
+    
+    _isLoading = true;
+    _loadingCompleter = Completer<void>();
+    
     if (file != null) {
-      return await file!.exists();
+      file!.exists().then((exists) {
+        if (!_loadingCompleter!.isCompleted) {
+          if (exists) {
+            _markAsLoaded();
+          } else {
+            _markAsError();
+          }
+        }
+      }).catchError((_) {
+        if (!_loadingCompleter!.isCompleted) {
+          _markAsError();
+        }
+      });
+    } else {
+      _markAsError();
     }
-    return false;
+  }
+
+  void _markAsLoaded() {
+    _isLoaded = true;
+    _hasError = false;
+    _isLoading = false;
+    _loadingCompleter?.complete();
+  }
+
+  void _markAsError() {
+    _isLoaded = false;
+    _hasError = true;
+    _isLoading = false;
+    _loadingCompleter?.complete();
   }
 
   @override

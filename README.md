@@ -76,7 +76,7 @@ Add StackBoardPlus to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  stack_board_plus: ^0.0.2
+  stack_board_plus: ^0.0.3
 ```
 OR
 ```yaml

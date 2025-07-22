@@ -1,6 +1,25 @@
-# StackBoardPlus
+<p align="center">
+  <h1 align="center">StackBoardPlus</h1>
+  <p align="center">
+    An advanced, stable tool for building photo editing and canvas-based apps with layers, transformations, and interactive elements.
+  </p>
 
-An advanced, stable tool for building photo editing and canvas-based apps with layers, transformations, and interactive elements.
+  <p align="center">
+    <a href="https://github.com/M4DGENIUS0/stack_board_plus">
+      <img src="https://img.shields.io/github/last-commit/M4DGENIUS0/stack_board_plus?style=flat&color=brightgreen" alt="Last Commit">
+    </a>
+    <a href="https://github.com/M4DGENIUS0/stack_board_plus">
+      <img src="https://img.shields.io/github/languages/top/M4DGENIUS0/stack_board_plus?style=flat&color=blue" alt="Top Language">
+    </a>
+    <a href="https://github.com/M4DGENIUS0/stack_board_plus">
+      <img src="https://img.shields.io/github/languages/count/M4DGENIUS0/stack_board_plus?style=flat&color=orange" alt="Languages Count">
+    </a>
+    <a href="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/M4DGENIUS0/stack_board_plus?style=flat&color=blueviolet" alt="License">
+    </a>
+  </p>
+</p>
+
 
 ## Features
 
@@ -14,6 +33,28 @@ An advanced, stable tool for building photo editing and canvas-based apps with l
 - **Professional UI**: Modern, color-coded handles with visual feedback
 - **Touch & Mouse Support**: Optimized for both touch and mouse interactions
 - **SVG Support**: Native SVG rendering with flutter_svg integration
+
+Below are real examples of what you can build with StackBoardPlus:
+
+---
+
+<p align="center">
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/add_text.gif?raw=true" alt="Add Text" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/asset_image.gif?raw=true" alt="Asset Image" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/clean.gif?raw=true" alt="Clean Canvas" width="250"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/image_from_gallery.gif?raw=true" alt="Gallery Image" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/import_export.gif?raw=true" alt="Import Export" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/network_image.gif?raw=true" alt="Network Image" width="250"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/svg.gif?raw=true" alt="SVG Handling" width="250"/>
+</p>
+
+
 
 ## Enhanced Movement System
 

@@ -59,7 +59,7 @@ The StackBoardPlus has been enhanced with a new movement system that provides sm
 ```dart
 // Items automatically move freely when dragged
 // No additional configuration required
-FlexBoardConfig(
+StackBoardPlusConfig(
   enableSnapToGrid: false, // Disable for completely free movement
   showGrid: false,         // Hide grid for cleaner appearance
 )

@@ -55,20 +55,20 @@ class MyCanvasApp extends StatefulWidget {
 }
 
 class _MyCanvasAppState extends State<MyCanvasApp> {
-  late FlexBoardController _controller;
+  late StackBoardPlusController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = FlexBoardController();
+    _controller = StackBoardPlusController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: EnhancedFlexBoard(
+      body: StackBoardPlus(
         controller: _controller,
-        config: const FlexBoardConfig(
+        config: const StackBoardPlusConfig(
           enableMultiSelect: true,
           showGrid: false,          // Disable grid for free movement
           enableSnapToGrid: false,  // Disable snapping for smooth movement
@@ -105,7 +105,7 @@ Or use the provided scripts:
 
 ### Text Items
 ```dart
-final textItem = TextFlexItem(
+final textItem = TextStackItem(
   id: 'text_1',
   position: const Offset(100, 100),
   size: const Size(200, 50),
@@ -117,7 +117,7 @@ controller.addItem(textItem);
 
 ### Shape Items
 ```dart
-final shapeItem = ShapeFlexItem(
+final shapeItem = ShapeStackItem(
   id: 'shape_1',
   position: const Offset(150, 150),
   size: const Size(100, 100),
@@ -129,7 +129,7 @@ controller.addItem(shapeItem);
 
 ### Image Items
 ```dart
-final imageItem = ImageFlexItem(
+final imageItem = ImageStackItem(
   id: 'image_1',
   position: const Offset(200, 200),
   size: const Size(120, 80),
@@ -190,7 +190,7 @@ controller.addItem(svgItem);
 ## Configuration
 
 ```dart
-FlexBoardConfig(
+StackBoardPlusConfig(
   enableMultiSelect: true,     // Allow multiple item selection
   enableSnapToGrid: false,     // Disable for free movement
   showGrid: false,             // Hide grid for clean appearance

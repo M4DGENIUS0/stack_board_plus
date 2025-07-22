@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:stack_board_plus/helpers.dart';
 import 'package:stack_board_plus/stack_board_plus_item.dart';
@@ -20,6 +21,36 @@ class TextItemContent implements StackItemContent {
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
+    // Enhanced customization properties
+    this.fontFamily,
+    this.fontSize = 16.0,
+    this.fontWeight,
+    this.fontStyle,
+    this.isUnderlined = false,
+    this.textColor,
+    this.textGradient,
+    this.strokeColor,
+    this.strokeWidth = 0.0,
+    this.shadowColor,
+    this.shadowOffset,
+    this.shadowBlurRadius = 0.0,
+    this.shadowSpreadRadius = 0.0,
+    this.arcDegree = 0.0,
+    this.letterSpacing = 0.0,
+    this.wordSpacing = 0.0,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderWidth = 0.0,
+    this.opacity = 1.0,
+    this.padding,
+    this.margin,
+    this.skewX = 0.0,
+    this.skewY = 0.0,
+    this.horizontalAlignment = TextAlign.center,
+    this.verticalAlignment = MainAxisAlignment.center,
+    this.flipHorizontally = false,
+    this.flipVertically = false,
+    this.lineHeight = 1.0,
   });
 
   factory TextItemContent.fromJson(Map<String, dynamic> data) {
@@ -62,6 +93,53 @@ class TextItemContent implements StackItemContent {
       selectionColor: data['selectionColor'] == null
           ? null
           : Color(asT<int>(data['selectionColor'])),
+      // Enhanced customization properties
+      fontFamily: data['fontFamily'] == null ? null : asT<String>(data['fontFamily']),
+      fontSize: data['fontSize'] == null ? 16.0 : asT<double>(data['fontSize']),
+      fontWeight: data['fontWeight'] == null 
+          ? null 
+          : FontWeight.values[asT<int>(data['fontWeight'])],
+      fontStyle: data['fontStyle'] == null
+          ? null
+          : FontStyle.values[asT<int>(data['fontStyle'])],
+      isUnderlined: data['isUnderlined'] == null ? false : asT<bool>(data['isUnderlined']),
+      textColor: data['textColor'] == null ? null : Color(asT<int>(data['textColor'])),
+      strokeColor: data['strokeColor'] == null ? null : Color(asT<int>(data['strokeColor'])),
+      strokeWidth: data['strokeWidth'] == null ? 0.0 : asT<double>(data['strokeWidth']),
+      shadowColor: data['shadowColor'] == null ? null : Color(asT<int>(data['shadowColor'])),
+      shadowOffset: data['shadowOffset'] == null ? null : Offset(asT<double>(data['shadowOffset']['dx']), asT<double>(data['shadowOffset']['dy'])),
+      shadowBlurRadius: data['shadowBlurRadius'] == null ? 0.0 : asT<double>(data['shadowBlurRadius']),
+      shadowSpreadRadius: data['shadowSpreadRadius'] == null ? 0.0 : asT<double>(data['shadowSpreadRadius']),
+      arcDegree: data['arcDegree'] == null ? 0.0 : asT<double>(data['arcDegree']),
+      letterSpacing: data['letterSpacing'] == null ? 0.0 : asT<double>(data['letterSpacing']),
+      wordSpacing: data['wordSpacing'] == null ? 0.0 : asT<double>(data['wordSpacing']),
+      backgroundColor: data['backgroundColor'] == null ? null : Color(asT<int>(data['backgroundColor'])),
+      borderColor: data['borderColor'] == null ? null : Color(asT<int>(data['borderColor'])),
+      borderWidth: data['borderWidth'] == null ? 0.0 : asT<double>(data['borderWidth']),
+      opacity: data['opacity'] == null ? 1.0 : asT<double>(data['opacity']),
+      padding: data['padding'] == null ? null : EdgeInsets.fromLTRB(
+        asT<double>(data['padding']['left']),
+        asT<double>(data['padding']['top']),
+        asT<double>(data['padding']['right']),
+        asT<double>(data['padding']['bottom']),
+      ),
+      margin: data['margin'] == null ? null : EdgeInsets.fromLTRB(
+        asT<double>(data['margin']['left']),
+        asT<double>(data['margin']['top']),
+        asT<double>(data['margin']['right']),
+        asT<double>(data['margin']['bottom']),
+      ),
+      skewX: data['skewX'] == null ? 0.0 : asT<double>(data['skewX']),
+      skewY: data['skewY'] == null ? 0.0 : asT<double>(data['skewY']),
+      horizontalAlignment: data['horizontalAlignment'] == null
+          ? TextAlign.center
+          : ExEnum.tryParse<TextAlign>(TextAlign.values, asT<String>(data['horizontalAlignment']))!,
+      verticalAlignment: data['verticalAlignment'] == null
+          ? MainAxisAlignment.center
+          : ExEnum.tryParse<MainAxisAlignment>(MainAxisAlignment.values, asT<String>(data['verticalAlignment']))!,
+      flipHorizontally: data['flipHorizontally'] == null ? false : asT<bool>(data['flipHorizontally']),
+      flipVertically: data['flipVertically'] == null ? false : asT<bool>(data['flipVertically']),
+      lineHeight: data['lineHeight'] == null ? 1.0 : asT<double>(data['lineHeight']),
     );
   }
 
@@ -79,6 +157,37 @@ class TextItemContent implements StackItemContent {
   TextWidthBasis? textWidthBasis;
   TextHeightBehavior? textHeightBehavior;
   Color? selectionColor;
+
+  // Enhanced customization properties
+  String? fontFamily;
+  double fontSize;
+  FontWeight? fontWeight;
+  FontStyle? fontStyle;
+  bool isUnderlined;
+  Color? textColor;
+  Gradient? textGradient;
+  Color? strokeColor;
+  double strokeWidth;
+  Color? shadowColor;
+  Offset? shadowOffset;
+  double shadowBlurRadius;
+  double shadowSpreadRadius;
+  double arcDegree; // Text arc from -180 to 180
+  double letterSpacing;
+  double wordSpacing;
+  Color? backgroundColor;
+  Color? borderColor;
+  double borderWidth;
+  double opacity;
+  EdgeInsets? padding;
+  EdgeInsets? margin;
+  double skewX; // Tilt X axis
+  double skewY; // Tilt Y axis
+  TextAlign horizontalAlignment;
+  MainAxisAlignment verticalAlignment;
+  bool flipHorizontally;
+  bool flipVertically;
+  double lineHeight;
 
   @override
   Map<String, dynamic> toJson() {
@@ -98,6 +207,49 @@ class TextItemContent implements StackItemContent {
       if (textHeightBehavior != null)
         'textHeightBehavior': textHeightBehavior?.toJson(),
       if (selectionColor != null) 'selectionColor': selectionColor?.value,
+      // Enhanced customization properties
+      if (fontFamily != null) 'fontFamily': fontFamily,
+      'fontSize': fontSize,
+      if (fontWeight != null) 'fontWeight': fontWeight?.index,
+      if (fontStyle != null) 'fontStyle': fontStyle?.index,
+      'isUnderlined': isUnderlined,
+      if (textColor != null) 'textColor': textColor?.value,
+      if (textGradient != null) 'textGradient': {
+        'colors': textGradient!.colors.map((c) => c.value).toList(),
+        'type': textGradient.runtimeType.toString(),
+      },
+      if (strokeColor != null) 'strokeColor': strokeColor?.value,
+      'strokeWidth': strokeWidth,
+      if (shadowColor != null) 'shadowColor': shadowColor?.value,
+      if (shadowOffset != null) 'shadowOffset': {'dx': shadowOffset!.dx, 'dy': shadowOffset!.dy},
+      'shadowBlurRadius': shadowBlurRadius,
+      'shadowSpreadRadius': shadowSpreadRadius,
+      'arcDegree': arcDegree,
+      'letterSpacing': letterSpacing,
+      'wordSpacing': wordSpacing,
+      if (backgroundColor != null) 'backgroundColor': backgroundColor?.value,
+      if (borderColor != null) 'borderColor': borderColor?.value,
+      'borderWidth': borderWidth,
+      'opacity': opacity,
+      if (padding != null) 'padding': {
+        'left': padding!.left,
+        'top': padding!.top,
+        'right': padding!.right,
+        'bottom': padding!.bottom,
+      },
+      if (margin != null) 'margin': {
+        'left': margin!.left,
+        'top': margin!.top,
+        'right': margin!.right,
+        'bottom': margin!.bottom,
+      },
+      'skewX': skewX,
+      'skewY': skewY,
+      'horizontalAlignment': horizontalAlignment.toString(),
+      'verticalAlignment': verticalAlignment.toString(),
+      'flipHorizontally': flipHorizontally,
+      'flipVertically': flipVertically,
+      'lineHeight': lineHeight,
     };
   }
 }

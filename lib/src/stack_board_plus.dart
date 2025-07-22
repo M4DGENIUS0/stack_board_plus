@@ -22,7 +22,7 @@ class StackBoardPlusConfig extends InheritedWidget {
   static StackBoardPlusConfig of(BuildContext context) {
     final StackBoardPlusConfig? result =
         context.dependOnInheritedWidgetOfExactType<StackBoardPlusConfig>();
-    assert(result != null, 'No StackBoardConfig found in context');
+    assert(result != null, 'No StackBoardPlusConfig found in context');
     return result!;
   }
 
@@ -31,7 +31,7 @@ class StackBoardPlusConfig extends InheritedWidget {
       oldWidget.controller != controller || oldWidget.caseStyle != caseStyle;
 }
 
-/// StackBoard
+/// StackBoardPlus
 class StackBoardPlus extends StatelessWidget {
   const StackBoardPlus({
     Key? key,

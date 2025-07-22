@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stack_board_plus/stack_board_plus_item.dart';
 import 'package:stack_board_plus/stack_items.dart';
 

@@ -38,6 +38,11 @@ dependencies:
   stack_board_plus:
     git: https://github.com/M4DGENIUS0/stack_board_plus.git
 ```
+OR
+```yaml
+dependencies:
+  stack_board_plus: ^0.0.1
+```
 
 ### Basic Usage
 

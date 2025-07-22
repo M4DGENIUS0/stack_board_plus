@@ -35,13 +35,13 @@ Add StackBoardPlus to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  stack_board_plus:
-    git: https://github.com/M4DGENIUS0/stack_board_plus.git
+  stack_board_plus: ^0.0.2
 ```
 OR
 ```yaml
 dependencies:
-  stack_board_plus: ^0.0.1
+  stack_board_plus:
+    git: https://github.com/M4DGENIUS0/stack_board_plus.git
 ```
 
 ### Basic Usage

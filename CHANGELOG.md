@@ -1,3 +1,8 @@
+## 0.0.2
+
+* Bug Fixed for Some imports/exports
+
+
 ## 0.0.1
 
 * Initial release of stack_board_plus

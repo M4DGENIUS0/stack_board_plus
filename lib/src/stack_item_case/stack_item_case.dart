@@ -625,46 +625,47 @@ class _StackItemCaseState extends State<StackItemCase> {
   }
 
   /// * Rotate handle
-  Widget _rotateAndMoveHandle(BuildContext context, StackItemStatus status,
-      StackItem<StackItemContent> item) {
-    final CaseStyle style = _caseStyle(context);
+  /// * Deprecated
+  // Widget _rotateAndMoveHandle(BuildContext context, StackItemStatus status,
+  //     StackItem<StackItemContent> item) {
+  //   final CaseStyle style = _caseStyle(context);
 
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      left: 0,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          GestureDetector(
-            onPanStart: (DragStartDetails dud) =>
-                _onPanStart(dud, context, StackItemStatus.roating),
-            onPanUpdate: (DragUpdateDetails dud) =>
-                _onRotateUpdate(dud, context, status),
-            onPanEnd: (_) => _onPanEnd(context, status),
-            child: _toolCase(
-              context,
-              style,
-              const Icon(Icons.sync),
-            ),
-          ),
-          if (item.size.width + item.size.height < style.buttonSize * 6)
-            Padding(
-              padding: EdgeInsets.only(left: style.buttonSize / 2),
-              child: GestureDetector(
-                onPanStart: (DragStartDetails details) =>
-                    _onPanStart(details, context, StackItemStatus.moving),
-                onPanUpdate: (DragUpdateDetails dud) =>
-                    _onPanUpdate(dud, context),
-                onPanEnd: (_) => _onPanEnd(context, status),
-                child: _toolCase(context, style, const Icon(Icons.open_with)),
-              ),
-            )
-        ]),
-      ),
-    );
-  }
+  //   return Positioned(
+  //     bottom: 0,
+  //     right: 0,
+  //     left: 0,
+  //     child: MouseRegion(
+  //       cursor: SystemMouseCursors.click,
+  //       child:
+  //           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+  //         GestureDetector(
+  //           onPanStart: (DragStartDetails dud) =>
+  //               _onPanStart(dud, context, StackItemStatus.roating),
+  //           onPanUpdate: (DragUpdateDetails dud) =>
+  //               _onRotateUpdate(dud, context, status),
+  //           onPanEnd: (_) => _onPanEnd(context, status),
+  //           child: _toolCase(
+  //             context,
+  //             style,
+  //             const Icon(Icons.sync),
+  //           ),
+  //         ),
+  //         if (item.size.width + item.size.height < style.buttonSize * 6)
+  //           Padding(
+  //             padding: EdgeInsets.only(left: style.buttonSize / 2),
+  //             child: GestureDetector(
+  //               onPanStart: (DragStartDetails details) =>
+  //                   _onPanStart(details, context, StackItemStatus.moving),
+  //               onPanUpdate: (DragUpdateDetails dud) =>
+  //                   _onPanUpdate(dud, context),
+  //               onPanEnd: (_) => _onPanEnd(context, status),
+  //               child: _toolCase(context, style, const Icon(Icons.open_with)),
+  //             ),
+  //           )
+  //       ]),
+  //     ),
+  //   );
+  // }
 
   /// * Operation handle shell
   Widget _toolCase(BuildContext context, CaseStyle style, Widget? child) {

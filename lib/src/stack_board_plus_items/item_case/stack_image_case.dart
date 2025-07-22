@@ -30,28 +30,5 @@ class StackImageCase extends StatelessWidget {
               },
             ),
           )
-        : content.isSvg && content.svgWidget != null
-            ? content.svgWidget!
-            : content.image != null
-                ? Image(
-                    image: content.image!,
-                    width: content.width,
-                    height: content.height,
-                    fit: content.fit,
-                    color: content.color,
-                    colorBlendMode: content.colorBlendMode,
-                    repeat: content.repeat,
-                    filterQuality: content.filterQuality,
-                    gaplessPlayback: content.gaplessPlayback,
-                    isAntiAlias: content.isAntiAlias,
-                    matchTextDirection: content.matchTextDirection,
-                    excludeFromSemantics: content.excludeFromSemantics,
-                    semanticLabel: content.semanticLabel,
-                  )
-                : Container(
-                    width: content.width,
-                    height: content.height,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.error, color: Colors.red),
-                  );
+        : content.buildWidget(); // Use the enhanced buildWidget method with shimmer loading
   }}

@@ -47,6 +47,7 @@ class StackBoardPlus extends StatelessWidget {
     this.onStatusChanged,
     this.actionsBuilder,
     this.borderBuilder,
+    this.customActionsBuilder,
   }) : super(key: key);
 
   final StackBoardPlusController? controller;
@@ -93,6 +94,8 @@ class StackBoardPlus extends StatelessWidget {
 
   /// * border builder
   final Widget Function(StackItemStatus operatState)? borderBuilder;
+
+  final List<Widget> Function(StackItem<StackItemContent> item, BuildContext context)? customActionsBuilder;
 
   StackBoardPlusController get _controller =>
       controller ?? StackBoardPlusController.def();
@@ -142,6 +145,7 @@ class StackBoardPlus extends StatelessWidget {
           onStatusChanged?.call(item, operatState) ?? true,
       actionsBuilder: actionsBuilder,
       borderBuilder: borderBuilder,
+      customActionsBuilder: customActionsBuilder,
     );
   }
 }

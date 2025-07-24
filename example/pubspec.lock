@@ -126,6 +126,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_drawing_board:
+    dependency: transitive
+    description:
+      name: flutter_drawing_board
+      sha256: b7eef8c506a12485853e8b4cdc110d1d307993279b588f3a35902a7d7082dbd4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.8"
   flutter_lints:
     dependency: "direct dev"
     description:

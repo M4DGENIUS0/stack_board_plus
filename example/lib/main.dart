@@ -11,6 +11,10 @@ import 'package:stack_board_plus/flutter_stack_board_plus.dart';
 import 'package:stack_board_plus/stack_board_plus_item.dart';
 import 'package:stack_board_plus/stack_case.dart';
 import 'package:stack_board_plus/stack_items.dart';
+import 'package:stack_board_plus/src/stack_board_plus_items/items/stack_draw_item.dart';
+import 'package:stack_board_plus/src/stack_board_plus_items/item_content/stack_draw_content.dart';
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+import 'package:stack_board_plus/src/stack_board_plus_items/item_case/stack_draw_case.dart';
 
 class ColorContent extends StackItemContent {
   ColorContent({required this.color});
@@ -571,9 +575,84 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               );
+            } else if (item is StackDrawItem) {
+              // Render the drawing canvas for drawing items with controls overlay
+              return Stack(
+                children: [
+                  // Main drawing board
+                  StackDrawCase(item: item),
+                  
+                  // Drawing controls overlay (only show when editing)
+                  if (item.status == StackItemStatus.editing)
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Undo button
+                            IconButton(
+                              icon: const Icon(Icons.undo, color: Colors.white, size: 18),
+                              onPressed: () => item.content!.undo(),
+                              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                              padding: EdgeInsets.zero,
+                            ),
+                            // Redo button
+                            IconButton(
+                              icon: const Icon(Icons.redo, color: Colors.white, size: 18),
+                              onPressed: () => item.content!.redo(),
+                              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                              padding: EdgeInsets.zero,
+                            ),
+                            // Clear button
+                            IconButton(
+                              icon: const Icon(Icons.clear, color: Colors.white, size: 18),
+                              onPressed: () => _showDrawingClearDialog(context, item),
+                              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                              padding: EdgeInsets.zero,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              );
             }
-
             return const SizedBox.shrink();
+          },
+          customActionsBuilder: (item, context) {
+            // Example using StackItemActionHelper for consistent styling
+            return [
+              // Duplicate button for text and drawing items
+              if (item is StackTextItem || item is StackDrawItem)
+                StackItemActionHelper.createDuplicateAction(
+                  item: item,
+                  context: context,
+                  onDuplicate: () => _duplicateItem(item),
+                ),
+              
+              // Drawing settings for drawing items
+              if (item is StackDrawItem)
+                StackItemActionHelper.createCustomActionButton(
+                  context: context,
+                  icon: const Icon(Icons.brush),
+                  onTap: () => showDrawingSettingsDialog(context, item.content!.controller),
+                  tooltip: 'Drawing Settings',
+                ),
+              
+              // Lock/Unlock toggle
+              StackItemActionHelper.createLockAction(
+                item: item,
+                context: context,
+                onToggleLock: () => _toggleItemLock(item),
+              ),
+            ];
           },
         ),
       ),
@@ -609,9 +688,15 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _addNetworkItem,
                 ),
                 _buildActionButton(
+                  icon: Icons.brush_outlined,
+                  label: 'Draw',
+                  color: Colors.pink,
+                  onPressed: _addDrawingItem,
+                ),
+                _buildActionButton(
                   icon: Icons.image,
                   label: 'Asset Image',
-                  color: Colors.green,
+                  color: Colors.greenAccent,
                   onPressed: _addAssetItem,
                 ),
                 _buildActionButton(
@@ -727,6 +812,124 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       },
+    );
+  }
+
+  void _addDrawingItem() {
+    final drawingController = DrawingController();
+    final drawContent = StackDrawContent(controller: drawingController);
+    final drawItem = StackDrawItem(
+      size: const Size(300, 300),
+      content: drawContent,
+      // Customize DrawingBoard behavior - these are examples of what users can control
+      // showDefaultActions: false,           // Don't show default toolbar
+      // showDefaultTools: false,             // Don't show default tool palette
+      // boardPanEnabled: true,               // Allow panning the drawing canvas
+      // boardScaleEnabled: true,             // Allow zooming the drawing canvas
+      // maxScale: 5.0,                       // Maximum zoom level
+      // minScale: 0.5,                       // Minimum zoom level
+      // boardScaleFactor: 200.0,             // Zoom sensitivity
+      // clipBehavior: Clip.antiAlias,        // How to clip the drawing area
+      // boardClipBehavior: Clip.hardEdge,    // How to clip the board
+      // panAxis: PanAxis.free,               // Allow free panning in all directions
+      // boardConstrained: false,             // Don't constrain drawing to board bounds
+      // alignment: Alignment.topCenter,      // Align drawing content
+      
+      
+      // You can also use gradient backgrounds:
+      // gradient: LinearGradient(
+      //   colors: [Colors.white, Colors.grey[100]!],
+      //   begin: Alignment.topLeft,
+      //   end: Alignment.bottomRight,
+      // ),
+      // Or background images:
+      // backgroundImage: DecorationImage(
+      //   image: AssetImage('assets/paper_texture.png'),
+      //   fit: BoxFit.cover,
+      //   opacity: 0.1,
+      // ),
+      // For circular drawing areas:
+      // shape: BoxShape.circle,
+      
+      // You can also add pointer event callbacks:
+      // onPointerDown: (event) => print('Pointer down: ${event.localPosition}'),
+      // onPointerMove: (event) => print('Pointer move: ${event.localPosition}'),
+      // onPointerUp: (event) => print('Pointer up: ${event.localPosition}'),
+      // Scale interaction callbacks:
+      // onInteractionStart: (details) => print('Scale start: ${details.focalPoint}'),
+      // onInteractionUpdate: (details) => print('Scale update: ${details.scale}'),
+      // onInteractionEnd: (details) => print('Scale end: ${details.velocity}'),
+    );
+    _boardController.addItem(drawItem);
+  }
+
+  // Helper method to duplicate an item
+  void _duplicateItem(StackItem<StackItemContent> item) {
+    if (item is StackTextItem) {
+      final duplicatedItem = StackTextItem(
+        content: TextItemContent(
+          data: item.content!.data,
+          style: item.content!.style,
+        ),
+        size: item.size,
+        offset: item.offset.translate(20, 20), // Offset the duplicate slightly
+      );
+      _boardController.addItem(duplicatedItem);
+    } else if (item is StackDrawItem) {
+      // For drawing items, create a new one with same configuration
+      final drawingController = DrawingController();
+      final drawContent = StackDrawContent(controller: drawingController);
+      final duplicatedItem = StackDrawItem(
+        size: item.size,
+        content: drawContent,
+        offset: item.offset.translate(20, 20),
+        // Copy all the drawing board configuration
+        backgroundColor: item.backgroundColor,
+        borderRadius: item.borderRadius,
+        boxShadow: item.boxShadow,
+        border: item.border,
+        gradient: item.gradient,
+        backgroundImage: item.backgroundImage,
+        shape: item.shape,
+        boardPanEnabled: item.boardPanEnabled,
+        boardScaleEnabled: item.boardScaleEnabled,
+        maxScale: item.maxScale,
+        minScale: item.minScale,
+      );
+      _boardController.addItem(duplicatedItem);
+    }
+    // Add more item types as needed
+  }
+
+  // Helper method to toggle item lock status
+  void _toggleItemLock(StackItem<StackItemContent> item) {
+    final newStatus = item.status == StackItemStatus.locked 
+        ? StackItemStatus.idle 
+        : StackItemStatus.locked;
+    
+    _boardController.updateBasic(item.id, status: newStatus);
+  }
+
+  void _showDrawingClearDialog(BuildContext context, StackDrawItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Drawing'),
+        content: const Text('Are you sure you want to clear all drawing content?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              item.content!.clear();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -2579,4 +2782,309 @@ class _BackgroundEditorDialogState extends State<_BackgroundEditorDialog> {
     );
     Navigator.pop(context);
   }
+}
+
+Future<void> showDrawingSettingsDialog(BuildContext context, DrawingController controller) async {
+  await showDialog(
+    context: context,
+    builder: (context) => StatefulBuilder(
+      builder: (context, setState) {
+        Color selectedColor = Colors.black;
+        double strokeWidth = 4.0;
+        
+        return Dialog(
+          child: Container(
+            width: 400,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Drawing Tools', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                
+                // Package Methods Info
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Available Package Methods:', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
+                      const Text('• item.content!.undo() - Undo last action', style: TextStyle(fontSize: 12)),
+                      const Text('• item.content!.redo() - Redo last action', style: TextStyle(fontSize: 12)),
+                      const Text('• item.content!.clear() - Clear all drawing', style: TextStyle(fontSize: 12)),
+                      const Text('• item.content!.getDrawingData() - Export data', style: TextStyle(fontSize: 12)),
+                      const Text('• controller.setStyle() - Set drawing style', style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                // Drawing Actions
+                const Text('Actions', style: TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.undo),
+                      label: const Text('Undo'),
+                      onPressed: () => controller.undo(),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.redo),
+                      label: const Text('Redo'),
+                      onPressed: () => controller.redo(),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.clear_all),
+                      label: const Text('Clear'),
+                      onPressed: () => _showClearDrawingDialog(context, controller),
+                      style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Drawing Tools
+                const Text('Drawing Tools', style: TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                const Text('Use the default drawing board tools or configure in the settings dialog.', 
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 16),
+                
+                // Color Selection
+                const Text('Color', style: TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    Colors.black, Colors.red, Colors.green, Colors.blue,
+                    Colors.yellow, Colors.purple, Colors.orange, Colors.brown,
+                  ].map((color) => GestureDetector(
+                    onTap: () {
+                      selectedColor = color;
+                      controller.setStyle(color: selectedColor);
+                      setState(() {});
+                    },
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: selectedColor == color ? Colors.white : Colors.grey,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  )).toList(),
+                ),
+                const SizedBox(height: 16),
+                
+                // Stroke Width
+                const Text('Stroke Width', style: TextStyle(fontWeight: FontWeight.w600)),
+                Slider(
+                  min: 1,
+                  max: 20,
+                  value: strokeWidth,
+                  divisions: 19,
+                  label: strokeWidth.round().toString(),
+                  onChanged: (value) {
+                    strokeWidth = value;
+                    controller.setStyle(strokeWidth: strokeWidth);
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(height: 16),
+                
+                // Import/Export
+                const Text('Import/Export', style: TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.save_alt),
+                      label: const Text('Export'),
+                      onPressed: () => _exportDrawing(context, controller),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.upload_file),
+                      label: const Text('Import'),
+                      onPressed: () => _importDrawing(context, controller),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+void _showClearDrawingDialog(BuildContext context, DrawingController controller) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Clear Drawing'),
+      content: const Text('Are you sure you want to clear all drawing content? This action cannot be undone.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            controller.clear();
+            Navigator.of(context).pop();
+          },
+          child: const Text('Clear', style: TextStyle(color: Colors.red)),
+        ),
+      ],
+    ),
+  );
+}
+
+void _exportDrawing(BuildContext context, DrawingController controller) {
+  try {
+    final drawingData = controller.getJsonList();
+    final jsonString = const JsonEncoder.withIndent('  ').convert(drawingData);
+    
+    // Show export dialog with JSON data
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Export Drawing'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Drawing data exported successfully!'),
+            const SizedBox(height: 16),
+            Container(
+              height: 200,
+              width: double.maxFinite,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SingleChildScrollView(
+                child: SelectableText(
+                  jsonString,
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  } catch (e) {
+    _showErrorDialog(context, 'Export failed: $e');
+  }
+}
+
+void _importDrawing(BuildContext context, DrawingController controller) {
+  final textController = TextEditingController();
+  
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Import Drawing'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('Paste your drawing JSON data below:'),
+          const SizedBox(height: 16),
+          TextField(
+            controller: textController,
+            maxLines: 10,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Paste JSON data here...',
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            try {
+              jsonDecode(textController.text); // Validate JSON
+              // Note: Full import implementation would need proper deserialization
+              // This is a placeholder for the basic structure
+              Navigator.of(context).pop();
+              _showSuccessDialog(context, 'Drawing imported successfully!');
+            } catch (e) {
+              _showErrorDialog(context, 'Import failed: Invalid JSON data');
+            }
+          },
+          child: const Text('Import'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Error'),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _showSuccessDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Success'),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
 }

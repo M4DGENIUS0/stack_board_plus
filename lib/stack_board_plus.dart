@@ -13,7 +13,7 @@ export 'src/stack_board_plus.dart';
 // Item cases (UI wrappers)
 export 'src/stack_item_case/stack_item_case.dart' hide StackItemType, getItemType;
 export 'src/stack_item_case/config_builder.dart';
-export 'src/helpers/stack_item_action_helper.dart' hide StackItemType, getItemType;
+export 'src/helpers/stack_item_action_helper.dart';
 export 'src/stack_board_plus_items/item_case/stack_image_case.dart';
 export 'src/stack_board_plus_items/item_case/stack_text_case.dart';
 export 'src/stack_board_plus_items/item_case/stack_draw_case.dart';

@@ -29,5 +29,3 @@ migrate_working_dir/
 .flutter-plugins
 .flutter-plugins-dependencies
 build/
-lib/src/stack_board_plus_items/item_case/stack_draw_case.dart
-lib/src/stack_board_plus_items/items/stack_draw_item.dart

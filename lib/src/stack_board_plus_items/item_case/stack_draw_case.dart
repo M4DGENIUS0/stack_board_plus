@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:stack_board_plus/stack_board_plus.dart';
 
 /// A widget that renders a drawing canvas for [StackDrawItem].

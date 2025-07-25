@@ -23,6 +23,7 @@
 
 ## Features
 
+- **New: Drawing Mode**: Add freehand drawing/canvas items with full customization, undo/redo, and import/export as JSON. Drawing items support pan, zoom, background, border, gradients, and more.
 - **Free Movement System**: Smooth, unrestricted item positioning without grid constraints
 - **Interactive Elements**: Text, shapes, images, SVG graphics, and custom items
 - **Transform Operations**: Drag, resize, rotate with intuitive handles
@@ -76,7 +77,7 @@ Add StackBoardPlus to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  stack_board_plus: ^0.0.3
+  stack_board_plus: ^0.0.4
 ```
 OR
 ```yaml

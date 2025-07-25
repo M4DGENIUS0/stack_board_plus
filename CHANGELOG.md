@@ -1,3 +1,26 @@
+## 0.0.4
+
+* **New Feature: Drawing Mode**
+  - Added `StackDrawItem`, `StackDrawContent`, and `StackDrawCase` to support a fully customizable drawing/canvas mode.
+  - Drawing items support undo, redo, clear, export/import as JSON, and full DrawingBoard configuration (pan, zoom, background, border, gradient, etc.).
+  - Drawing mode is integrated with the stack board system and supports all item management features.
+  - Example and documentation updated to demonstrate drawing import/export and customization.
+
+* **Enhanced Import/Export**
+  - Improved JSON serialization for drawing and other stack items.
+  - Added placeholder and structure for robust import/export of drawing data (with future extensibility for deserialization).
+
+* **Bug Fixes & Improvements**
+  - Fixed and cleaned up import statements across the codebase for better modularity and package structure.
+  - Refactored helper files and removed unused/duplicate files.
+  - Improved type safety and null handling in helpers.
+  - Enhanced action helpers for stack items, including better type detection and custom action support.
+
+* **Documentation**
+  - Added/updated guides for drawing customization, enhanced movement, and text customization.
+  - Improved code comments and usage examples for new features.
+
+
 ## 0.0.3
 
 * Updated The Readme with Pre-Views.

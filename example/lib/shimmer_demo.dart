@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stack_board_plus/flutter_stack_board_plus.dart';
-import 'package:stack_board_plus/stack_items.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 class ShimmerDemo extends StatefulWidget {
   const ShimmerDemo({Key? key}) : super(key: key);
@@ -140,11 +139,7 @@ class _ShimmerDemoState extends State<ShimmerDemo> {
                 Text('2. Once images load, try dragging and moving them'),
                 Text('3. The shimmer should NOT flicker during movement'),
                 Text('4. Shimmer should only appear during initial loading'),
-                SizedBox(height: 8),
-                Text(
-                  '✅ Fixed: No shimmer flickering when moving loaded images',
-                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
-                ),
+                
               ],
             ),
           ),

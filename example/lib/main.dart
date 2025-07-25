@@ -7,14 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:stack_board_plus/flutter_stack_board_plus.dart';
-import 'package:stack_board_plus/stack_board_plus_item.dart';
-import 'package:stack_board_plus/stack_case.dart';
-import 'package:stack_board_plus/stack_items.dart';
-import 'package:stack_board_plus/src/stack_board_plus_items/items/stack_draw_item.dart';
-import 'package:stack_board_plus/src/stack_board_plus_items/item_content/stack_draw_content.dart';
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-import 'package:stack_board_plus/src/stack_board_plus_items/item_case/stack_draw_case.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 class ColorContent extends StackItemContent {
   ColorContent({required this.color});
@@ -630,12 +623,12 @@ class _HomePageState extends State<HomePage> {
             // Example using StackItemActionHelper for consistent styling
             return [
               // Duplicate button for text and drawing items
-              if (item is StackTextItem || item is StackDrawItem)
-                StackItemActionHelper.createDuplicateAction(
-                  item: item,
-                  context: context,
-                  onDuplicate: () => _duplicateItem(item),
-                ),
+              // if (item is StackTextItem || item is StackDrawItem)
+              //   StackItemActionHelper.createDuplicateAction(
+              //     item: item,
+              //     context: context,
+              //     onDuplicate: () => _duplicateItem(item),
+              //   ),
               
               // Drawing settings for drawing items
               if (item is StackDrawItem)
@@ -647,11 +640,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               
               // Lock/Unlock toggle
-              StackItemActionHelper.createLockAction(
-                item: item,
-                context: context,
-                onToggleLock: () => _toggleItemLock(item),
-              ),
+              // StackItemActionHelper.createLockAction(
+              //   item: item,
+              //   context: context,
+              //   onToggleLock: () => _toggleItemLock(item),
+              // ),
             ];
           },
         ),
@@ -2796,145 +2789,150 @@ Future<void> showDrawingSettingsDialog(BuildContext context, DrawingController c
           child: Container(
             width: 400,
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Drawing Tools', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-                const Divider(),
-                
-                // Package Methods Info
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Available Package Methods:', style: TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      const Text('• item.content!.undo() - Undo last action', style: TextStyle(fontSize: 12)),
-                      const Text('• item.content!.redo() - Redo last action', style: TextStyle(fontSize: 12)),
-                      const Text('• item.content!.clear() - Clear all drawing', style: TextStyle(fontSize: 12)),
-                      const Text('• item.content!.getDrawingData() - Export data', style: TextStyle(fontSize: 12)),
-                      const Text('• controller.setStyle() - Set drawing style', style: TextStyle(fontSize: 12)),
+                      const Text('Drawing Tools', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                
-                // Drawing Actions
-                const Text('Actions', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.undo),
-                      label: const Text('Undo'),
-                      onPressed: () => controller.undo(),
+                  const Divider(),
+                  
+                  // Package Methods Info
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
                     ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.redo),
-                      label: const Text('Redo'),
-                      onPressed: () => controller.redo(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Available Package Methods:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        const Text('• item.content!.undo() - Undo last action', style: TextStyle(fontSize: 12)),
+                        const Text('• item.content!.redo() - Redo last action', style: TextStyle(fontSize: 12)),
+                        const Text('• item.content!.clear() - Clear all drawing', style: TextStyle(fontSize: 12)),
+                        const Text('• item.content!.getDrawingData() - Export data', style: TextStyle(fontSize: 12)),
+                        const Text('• controller.setStyle() - Set drawing style', style: TextStyle(fontSize: 12)),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.clear_all),
-                      label: const Text('Clear'),
-                      onPressed: () => _showClearDrawingDialog(context, controller),
-                      style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Drawing Actions
+                  const Text('Actions', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.undo),
+                          label: const Text('Undo'),
+                          onPressed: () => controller.undo(),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.redo),
+                          label: const Text('Redo'),
+                          onPressed: () => controller.redo(),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.clear_all),
+                          label: const Text('Clear'),
+                          onPressed: () => _showClearDrawingDialog(context, controller),
+                          style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                
-                // Drawing Tools
-                const Text('Drawing Tools', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                const Text('Use the default drawing board tools or configure in the settings dialog.', 
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
-                const SizedBox(height: 16),
-                
-                // Color Selection
-                const Text('Color', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    Colors.black, Colors.red, Colors.green, Colors.blue,
-                    Colors.yellow, Colors.purple, Colors.orange, Colors.brown,
-                  ].map((color) => GestureDetector(
-                    onTap: () {
-                      selectedColor = color;
-                      controller.setStyle(color: selectedColor);
-                      setState(() {});
-                    },
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: selectedColor == color ? Colors.white : Colors.grey,
-                          width: 2,
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Drawing Tools
+                  const Text('Drawing Tools', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  const Text('Use the default drawing board tools or configure in the settings dialog.', 
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  const SizedBox(height: 16),
+                  
+                  // Color Selection
+                  const Text('Color', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Colors.black, Colors.red, Colors.green, Colors.blue,
+                      Colors.yellow, Colors.purple, Colors.orange, Colors.brown,
+                    ].map((color) => GestureDetector(
+                      onTap: () {
+                        selectedColor = color;
+                        controller.setStyle(color: selectedColor);
+                        setState(() {});
+                      },
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selectedColor == color ? Colors.white : Colors.grey,
+                            width: 2,
+                          ),
                         ),
                       ),
-                    ),
-                  )).toList(),
-                ),
-                const SizedBox(height: 16),
-                
-                // Stroke Width
-                const Text('Stroke Width', style: TextStyle(fontWeight: FontWeight.w600)),
-                Slider(
-                  min: 1,
-                  max: 20,
-                  value: strokeWidth,
-                  divisions: 19,
-                  label: strokeWidth.round().toString(),
-                  onChanged: (value) {
-                    strokeWidth = value;
-                    controller.setStyle(strokeWidth: strokeWidth);
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(height: 16),
-                
-                // Import/Export
-                const Text('Import/Export', style: TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.save_alt),
-                      label: const Text('Export'),
-                      onPressed: () => _exportDrawing(context, controller),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.upload_file),
-                      label: const Text('Import'),
-                      onPressed: () => _importDrawing(context, controller),
-                    ),
-                  ],
-                ),
-              ],
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Stroke Width
+                  const Text('Stroke Width', style: TextStyle(fontWeight: FontWeight.w600)),
+                  Slider(
+                    min: 1,
+                    max: 20,
+                    value: strokeWidth,
+                    divisions: 19,
+                    label: strokeWidth.round().toString(),
+                    onChanged: (value) {
+                      strokeWidth = value;
+                      controller.setStyle(strokeWidth: strokeWidth);
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Import/Export
+                  const Text('Import/Export', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.save_alt),
+                        label: const Text('Export'),
+                        onPressed: () => _exportDrawing(context, controller),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.upload_file),
+                        label: const Text('Import'),
+                        onPressed: () => _importDrawing(context, controller),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

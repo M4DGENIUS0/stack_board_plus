@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:stack_board_plus/helpers.dart';
-import 'package:stack_board_plus/stack_board_plus_item.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 class StackConfig {
   StackConfig({

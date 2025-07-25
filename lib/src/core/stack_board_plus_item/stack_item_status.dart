@@ -9,6 +9,9 @@ enum StackItemStatus {
   /// * Editing
   editing,
 
+  /// * Drawing (actively drawing on a canvas)
+  drawing,
+
   /// * Moving
   moving,
 

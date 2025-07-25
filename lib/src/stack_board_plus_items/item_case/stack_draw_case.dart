@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-import '../items/stack_draw_item.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 /// A widget that renders a drawing canvas for [StackDrawItem].
 /// 
@@ -70,6 +70,7 @@ class StackDrawCase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = StackBoardPlusConfig.of(context).controller;
     return SizedBox(
       width: item.size.width,
       height: item.size.height,
@@ -91,9 +92,19 @@ class StackDrawCase extends StatelessWidget {
         ),
         showDefaultActions: item.showDefaultActions,
         showDefaultTools: item.showDefaultTools,
-        onPointerDown: item.onPointerDown,
-        onPointerMove: item.onPointerMove,
-        onPointerUp: item.onPointerUp,
+        // onPointerDown: (event) {
+        //   controller.updateBasic(item.id, status: StackItemStatus.drawing);
+        //   if (item.onPointerDown != null) item.onPointerDown!(event);
+        // },
+        onPointerMove: (event) {
+          controller.updateBasic(item.id,status: StackItemStatus.drawing);
+          if (item.onPointerMove != null) item.onPointerMove!(event);
+        },
+        // onPointerUp: (event) {
+        //   controller.updateBasic(item.id, status: StackItemStatus.drawing);
+        //   if (item.onPointerUp != null) item.onPointerUp!(event);
+        // },
+        
         clipBehavior: item.clipBehavior,
         defaultToolsBuilder: item.defaultToolsBuilder,
         boardClipBehavior: item.boardClipBehavior,

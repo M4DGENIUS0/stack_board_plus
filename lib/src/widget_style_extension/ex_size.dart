@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:stack_board_plus/helpers.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 
 

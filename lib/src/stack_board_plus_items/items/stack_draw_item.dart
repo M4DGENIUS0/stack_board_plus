@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-import '../../core/stack_board_plus_item/stack_item.dart';
-import '../../core/stack_board_plus_item/stack_item_status.dart';
-import '../item_content/stack_draw_content.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 /// StackDrawItem represents a drawing item that can be added to the stack board.
 /// It provides full access to all DrawingBoard customization options.

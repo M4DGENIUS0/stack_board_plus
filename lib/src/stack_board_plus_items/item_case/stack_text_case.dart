@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stack_board_plus/stack_board_plus_item.dart';
-import 'package:stack_board_plus/stack_items.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 class StackTextCase extends StatelessWidget {
   const StackTextCase({

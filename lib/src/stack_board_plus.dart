@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stack_board_plus/helpers.dart';
-import 'package:stack_board_plus/src/stack_item_case/stack_item_case.dart';
-
-import 'core/case_style.dart';
-import 'core/stack_board_plus_controller.dart';
-import 'core/stack_board_plus_item/stack_item.dart';
-import 'core/stack_board_plus_item/stack_item_content.dart';
-import 'core/stack_board_plus_item/stack_item_status.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 class StackBoardPlusConfig extends InheritedWidget {
   const StackBoardPlusConfig({

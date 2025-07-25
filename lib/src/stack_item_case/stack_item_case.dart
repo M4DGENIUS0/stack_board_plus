@@ -2,10 +2,7 @@ import 'dart:math' as math;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:stack_board_plus/flutter_stack_board_plus.dart';
-import 'package:stack_board_plus/src/stack_item_case/config_builder.dart';
-import 'package:stack_board_plus/src/stack_item_case/stack_item_action_helper.dart';
-import 'package:stack_board_plus/stack_board_plus_item.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 // Add this import for the dialog
 
 /// * Operate box
@@ -170,7 +167,7 @@ class _StackItemCaseState extends State<StackItemCase> {
     final StackItem<StackItemContent>? item = _stackController.getById(itemId);
     if (item == null) return;
     if (item.status == StackItemStatus.editing) return;
-
+    if (item.status == StackItemStatus.drawing) return;
     final double angle = item.angle;
     final double sina = math.sin(-angle);
     final double cosa = math.cos(-angle);
@@ -420,8 +417,8 @@ class _StackItemCaseState extends State<StackItemCase> {
       top: -style.buttonSize * 0.1, 
       left: 0,
       right: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Wrap(
+        alignment: WrapAlignment.center,
         children: [
           // Inject user-defined custom actions (if any) using the helper
           ...StackItemActionHelper.buildCustomActions(
@@ -451,9 +448,9 @@ class _StackItemCaseState extends State<StackItemCase> {
                 ),
               ),
             ),
-            const SizedBox(width: 8), 
+            // const SizedBox(width: 8), 
             // Move handle for small items
-            if (item.size.width + item.size.height < style.buttonSize * 6)
+            if ((item.size.width + item.size.height < style.buttonSize * 6 ) || (item is StackDrawItem))
               MouseRegion(
                 cursor: SystemMouseCursors.grab,
                 child: GestureDetector(
@@ -469,7 +466,7 @@ class _StackItemCaseState extends State<StackItemCase> {
                   ),
                 ),
               ),
-            const SizedBox(width: 8),
+            // const SizedBox(width: 8),
           ],
           // Delete handle (always visible)
           if ((item.size.width + item.size.height < style.buttonSize * 6) == false)

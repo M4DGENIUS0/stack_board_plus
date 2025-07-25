@@ -1,6 +1,5 @@
 // Action-related helpers for StackBoardPlus
 import 'package:flutter/material.dart';
-import 'package:stack_board_plus/flutter_stack_board_plus.dart';
 import '../core/stack_board_plus_item/stack_item.dart';
 import '../core/stack_board_plus_item/stack_item_content.dart';
 

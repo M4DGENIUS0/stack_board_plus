@@ -3,11 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
-import 'package:stack_board_plus/src/widget_style_extension/ex_offset.dart';
-import 'package:stack_board_plus/src/widget_style_extension/ex_size.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
-import 'stack_item_content.dart';
-import 'stack_item_status.dart';
 
 /// * Generate Id for StackItem
 String _genId() {

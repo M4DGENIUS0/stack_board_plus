@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// 转换为 Map<String, dynamic>
+
 /// Convert to Map<String, dynamic>
 Map<String, dynamic> asMap(dynamic value) {
   if (value == null) {
@@ -9,7 +9,7 @@ Map<String, dynamic> asMap(dynamic value) {
   return asT<Map<String, dynamic>>(value);
 }
 
-/// 自动转换类型
+
 /// Auto convert type
 T asT<T>(dynamic value, [T? def]) {
   if (value is T) {
@@ -49,7 +49,7 @@ T asT<T>(dynamic value, [T? def]) {
   return def as T;
 }
 
-/// 自动转换为可空类型
+
 /// Auto convert to nullable type
 T? asNullT<T>(dynamic value) {
   if (value is T) {

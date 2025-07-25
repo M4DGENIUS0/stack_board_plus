@@ -33,8 +33,7 @@
 // item.content!.controller.setStyle(color: Colors.red, strokeWidth: 5.0);
 // ```
 
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-import '../../core/stack_board_plus_item/stack_item_content.dart';
+import 'package:stack_board_plus/stack_board_plus.dart';
 
 class StackDrawContent implements StackItemContent {
   final DrawingController controller;

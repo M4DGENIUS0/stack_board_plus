@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stack_board_plus/stack_board_plus.dart';
+import 'shape_edit_dialog.dart';
 
 class ColorContent extends StackItemContent {
   ColorContent({required this.color});
@@ -616,6 +617,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                 ],
               );
+            } else if (item is StackShapeItem) {
+              return StackShapeCase(
+                item: item,
+                customEditorBuilder: (context, shapeItem, onUpdate) {
+                  return ShapeEditDialog(
+                    item: shapeItem,
+                    onUpdate: (updated) {
+                      onUpdate(updated);
+                    },
+                  );
+                },
+              );
             }
             return const SizedBox.shrink();
           },
@@ -715,6 +728,12 @@ class _HomePageState extends State<HomePage> {
                   label: 'Color',
                   color: Colors.orange,
                   onPressed: _addCustomItem,
+                ),
+                _buildActionButton(
+                  icon: Icons.category,
+                  label: 'Shape',
+                  color: Colors.deepPurple,
+                  onPressed: _addShapeItem,
                 ),
                 _buildActionButton(
                   icon: Icons.file_download,
@@ -856,52 +875,6 @@ class _HomePageState extends State<HomePage> {
     _boardController.addItem(drawItem);
   }
 
-  // Helper method to duplicate an item
-  void _duplicateItem(StackItem<StackItemContent> item) {
-    if (item is StackTextItem) {
-      final duplicatedItem = StackTextItem(
-        content: TextItemContent(
-          data: item.content!.data,
-          style: item.content!.style,
-        ),
-        size: item.size,
-        offset: item.offset.translate(20, 20), // Offset the duplicate slightly
-      );
-      _boardController.addItem(duplicatedItem);
-    } else if (item is StackDrawItem) {
-      // For drawing items, create a new one with same configuration
-      final drawingController = DrawingController();
-      final drawContent = StackDrawContent(controller: drawingController);
-      final duplicatedItem = StackDrawItem(
-        size: item.size,
-        content: drawContent,
-        offset: item.offset.translate(20, 20),
-        // Copy all the drawing board configuration
-        backgroundColor: item.backgroundColor,
-        borderRadius: item.borderRadius,
-        boxShadow: item.boxShadow,
-        border: item.border,
-        gradient: item.gradient,
-        backgroundImage: item.backgroundImage,
-        shape: item.shape,
-        boardPanEnabled: item.boardPanEnabled,
-        boardScaleEnabled: item.boardScaleEnabled,
-        maxScale: item.maxScale,
-        minScale: item.minScale,
-      );
-      _boardController.addItem(duplicatedItem);
-    }
-    // Add more item types as needed
-  }
-
-  // Helper method to toggle item lock status
-  void _toggleItemLock(StackItem<StackItemContent> item) {
-    final newStatus = item.status == StackItemStatus.locked 
-        ? StackItemStatus.idle 
-        : StackItemStatus.locked;
-    
-    _boardController.updateBasic(item.id, status: newStatus);
-  }
 
   void _showDrawingClearDialog(BuildContext context, StackDrawItem item) {
     showDialog(
@@ -925,6 +898,250 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  /// Add shape item with customizable properties
+  void _addShapeItem() {
+    // Create a default shape item with random color and size variation
+    final colors = [
+      Colors.red, Colors.blue, Colors.green, Colors.purple, 
+      Colors.orange, Colors.teal, Colors.pink, Colors.amber
+    ];
+    
+    final shapes = [
+      StackShapeType.rectangle,
+      StackShapeType.circle,
+      StackShapeType.roundedRectangle,
+      StackShapeType.star,
+      StackShapeType.polygon,
+      StackShapeType.heart,
+      StackShapeType.halfMoon,
+    ];
+
+    final random = Random();
+    final selectedColor = colors[random.nextInt(colors.length)];
+    final selectedShape = shapes[random.nextInt(shapes.length)];
+    final size = 80.0 + random.nextDouble() * 40; // Random size between 80-120
+
+    final shapeData = StackShapeData(
+      type: selectedShape,
+      fillColor: selectedColor.withOpacity(0.7),
+      strokeColor: selectedColor,
+      strokeWidth: 2.0,
+      opacity: 1.0,
+      tilt: 0.0,
+      width: size,
+      height: size,
+      flipHorizontal: false,
+      flipVertical: false,
+      endpoints: selectedShape == StackShapeType.star || selectedShape == StackShapeType.polygon 
+          ? 5 // Default 5 points for star/polygon
+          : null,
+    );
+
+    final shapeItem = StackShapeItem(
+      data: shapeData,
+      size: Size(size, size),
+      offset: Offset.zero, // Will be auto-positioned by controller
+    );
+
+    _boardController.addItem(shapeItem);
+  }
+
+  /// Show drawing settings dialog
+
+  Future<void> showDrawingSettingsDialog(BuildContext context, DrawingController controller) async {
+  await showDialog(
+    context: context,
+    builder: (context) => StatefulBuilder(
+      builder: (context, setState) {
+        Color selectedColor = Colors.black;
+        double strokeWidth = 4.0;
+        
+        return Dialog(
+          child: Container(
+            width: 400,
+            padding: const EdgeInsets.all(16),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Settings and tools', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  
+                  // Package Methods Info
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Available Package Methods:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        const Text('• item.content!.undo() - Undo last action', style: TextStyle(fontSize: 12)),
+                        const Text('• item.content!.redo() - Redo last action', style: TextStyle(fontSize: 12)),
+                        const Text('• item.content!.clear() - Clear all drawing', style: TextStyle(fontSize: 12)),
+                        const Text('• item.content!.getDrawingData() - Export data', style: TextStyle(fontSize: 12)),
+                        const Text('• controller.setStyle() - Set drawing style', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+              onPressed: () {
+                controller.undo();
+                Navigator.pop(context);
+              },
+              child: const Text('Undo Last Draw'),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                controller.redo();
+                Navigator.pop(context);
+              },
+              child: const Text('Redo Last Draw'),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                controller.clear();
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Clear All'),
+            ),
+                  const SizedBox(height: 16),
+                  
+                  // Drawing Actions
+                  const Text('Actions', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.undo),
+                          label: const Text('Undo'),
+                          onPressed: () => controller.undo(),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.redo),
+                          label: const Text('Redo'),
+                          onPressed: () => controller.redo(),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.clear_all),
+                          label: const Text('Clear'),
+                          onPressed: () => _showClearDrawingDialog(context, controller),
+                          style: ElevatedButton.styleFrom(foregroundColor: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Drawing Tools
+                  const Text('Drawing Tools', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  const Text('Use the default drawing board tools or configure in the settings dialog.', 
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  const SizedBox(height: 16),
+                  
+                  // Color Selection
+                  const Text('Color', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Colors.black, Colors.red, Colors.green, Colors.blue,
+                      Colors.yellow, Colors.purple, Colors.orange, Colors.brown,
+                    ].map((color) => GestureDetector(
+                      onTap: () {
+                        selectedColor = color;
+                        controller.setStyle(color: selectedColor);
+                        setState(() {});
+                      },
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selectedColor == color ? Colors.white : Colors.grey,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Stroke Width
+                  const Text('Stroke Width', style: TextStyle(fontWeight: FontWeight.w600)),
+                  Slider(
+                    min: 1,
+                    max: 20,
+                    value: strokeWidth,
+                    divisions: 19,
+                    label: strokeWidth.round().toString(),
+                    onChanged: (value) {
+                      strokeWidth = value;
+                      controller.setStyle(strokeWidth: strokeWidth);
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Import/Export
+                  const Text('Import/Export', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.save_alt),
+                        label: const Text('Export'),
+                        onPressed: () => _exportDrawing(context, controller),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.upload_file),
+                        label: const Text('Import'),
+                        onPressed: () => _importDrawing(context, controller),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+
+  
 }
 
 class _EnhancedStackTextCase extends StatefulWidget {

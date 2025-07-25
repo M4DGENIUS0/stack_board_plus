@@ -8,6 +8,7 @@ enum StackItemType {
   drawing,
   text,
   image,
+  shape,
   all,
 }
 
@@ -17,6 +18,7 @@ StackItemType getItemType(StackItem<StackItemContent> item) {
   if (type == 'StackDrawItem') return StackItemType.drawing;
   if (type == 'StackTextItem') return StackItemType.text;
   if (type == 'StackImageItem') return StackItemType.image;
+  if (type == 'StackShapeItem') return StackItemType.shape;
   return StackItemType.all;
 }
 

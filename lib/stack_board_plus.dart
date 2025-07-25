@@ -17,14 +17,20 @@ export 'src/helpers/stack_item_action_helper.dart';
 export 'src/stack_board_plus_items/item_case/stack_image_case.dart';
 export 'src/stack_board_plus_items/item_case/stack_text_case.dart';
 export 'src/stack_board_plus_items/item_case/stack_draw_case.dart';
+export 'src/stack_board_plus_items/item_case/stack_shape_case.dart';
+
 
 // Items (data models)
 export 'src/stack_board_plus_items/items/stack_draw_item.dart';
 export 'src/stack_board_plus_items/items/stack_image_item.dart';
 export 'src/stack_board_plus_items/items/stack_text_item.dart';
+export 'src/stack_board_plus_items/items/stack_shape_item.dart';
 
 // Item content (data for items)
 export 'src/stack_board_plus_items/item_content/stack_draw_content.dart';
+export 'src/stack_board_plus_items/item_content/stack_shape_content.dart';
+
+// Shape controls UI
 
 // Helpers
 export 'src/helpers/stack_item_action_helpers.dart' hide StackItemType, getItemType;

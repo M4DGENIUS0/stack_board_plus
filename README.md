@@ -23,7 +23,7 @@
 
 ## Features
 
-- **New: Drawing Mode**: Add freehand drawing/canvas items with full customization, undo/redo, and import/export as JSON. Drawing items support pan, zoom, background, border, gradients, and more.
+
 - **Free Movement System**: Smooth, unrestricted item positioning without grid constraints
 - **Interactive Elements**: Text, shapes, images, SVG graphics, and custom items
 - **Transform Operations**: Drag, resize, rotate with intuitive handles
@@ -34,6 +34,7 @@
 - **Professional UI**: Modern, color-coded handles with visual feedback
 - **Touch & Mouse Support**: Optimized for both touch and mouse interactions
 - **SVG Support**: Native SVG rendering with flutter_svg integration
+- **Drawing Mode**: Add freehand drawing/canvas items with full customization, undo/redo, and import/export as JSON. Drawing items support pan, zoom, background, border, gradients, and more.
 
 Below are real examples of what you can build with StackBoardPlus:
 
@@ -53,6 +54,7 @@ Below are real examples of what you can build with StackBoardPlus:
 
 <p align="center">
   <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/svg.gif?raw=true" alt="SVG Handling" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/draw_feature.gif?raw=true" alt="SVG Handling" width="250"/>
 </p>
 
 

@@ -26,6 +26,7 @@
 
 - **Free Movement System**: Smooth, unrestricted item positioning without grid constraints
 - **Interactive Elements**: Text, shapes, images, SVG graphics, and custom items
+- **Shape Item Support**: Add geometric shapes (rectangle, circle, rounded rectangle, line, star, polygon, heart, half-moon) with customizable fill, stroke, opacity, tilt, and more.
 - **Transform Operations**: Drag, resize, rotate with intuitive handles
 - **Multi-Selection**: Select and manipulate multiple items simultaneously
 - **Layer Management**: Z-index control for proper layering
@@ -55,6 +56,7 @@ Below are real examples of what you can build with StackBoardPlus:
 <p align="center">
   <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/svg.gif?raw=true" alt="SVG Handling" width="250"/>
   <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/draw_feature.gif?raw=true" alt="SVG Handling" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/shape.gif?raw=true" alt="SVG Handling" width="250"/>
 </p>
 
 
@@ -79,7 +81,7 @@ Add StackBoardPlus to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  stack_board_plus: ^0.0.4
+  stack_board_plus: ^0.0.5
 ```
 OR
 ```yaml
@@ -161,12 +163,21 @@ controller.addItem(textItem);
 
 ### Shape Items
 ```dart
-final shapeItem = ShapeStackItem(
-  id: 'shape_1',
-  position: const Offset(150, 150),
+final shapeItem = StackShapeItem(
+  data: StackShapeData(
+    type: StackShapeType.circle, // or rectangle, roundedRectangle, star, polygon, heart, halfMoon
+    fillColor: Colors.blue,
+    strokeColor: Colors.blue.shade800,
+    strokeWidth: 3,
+    opacity: 1.0,
+    tilt: 0.0,
+    width: 100,
+    height: 100,
+    flipHorizontal: false,
+    flipVertical: false,
+    endpoints: 5, // for star/polygon
+  ),
   size: const Size(100, 100),
-  shape: ShapeType.circle,
-  shapeColor: Colors.blue,
 );
 controller.addItem(shapeItem);
 ```

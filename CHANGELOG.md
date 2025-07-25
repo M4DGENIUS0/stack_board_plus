@@ -1,3 +1,12 @@
+## 0.0.5
+
+* **New Feature: Shape Items**
+  - Added `StackShapeItem`, `StackShapeData`, and related classes to support geometric shapes (rectangle, circle, rounded rectangle, line, star, polygon, heart, half-moon).
+  - Shape items support fill color, stroke color, stroke width, opacity, tilt, flipping, and endpoints (for polygons/stars).
+  - Shape items are fully integrated with the stack board system and support all item management features.
+  - Extensible shape editing interface via `StackShapeCase` and custom editor builder.
+  - Example app updated to demonstrate adding and editing shape items.
+
 ## 0.0.4
 
 * **New Feature: Drawing Mode**

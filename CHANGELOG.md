@@ -1,3 +1,14 @@
+## 0.0.6
+
+* **Bug Fixes**
+  - Fixed the bug where double-clicking on shape items directly opened the dialog box - now properly handles dynamic shape interaction behavior.
+
+* **Code Refactoring & Architecture**
+  - Completely refactored example application from a massive 3311-line single file into a clean, modular architecture.
+  - Organized codebase into logical directories: `models/`, `pages/`, `dialogs/`, `widgets/`, `mixins/`, and `utils/`.
+  - Improved code maintainability and debugging experience with clear separation of concerns.
+  - Enhanced project structure for better development workflow and team collaboration.
+
 ## 0.0.5
 
 * **New Feature: Shape Items**

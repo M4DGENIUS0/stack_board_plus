@@ -26,7 +26,7 @@
 
 - **Free Movement System**: Smooth, unrestricted item positioning without grid constraints
 - **Interactive Elements**: Text, shapes, images, SVG graphics, and custom items
-- **Shape Item Support**: Add geometric shapes (rectangle, circle, rounded rectangle, line, star, polygon, heart, half-moon) with customizable fill, stroke, opacity, tilt, and more.
+- **Shape Item Support**: Add geometric shapes (rectangle, circle, rounded rectangle, line, star, polygon, heart, half-moon) with customizable fill, stroke, opacity, tilt, and more. Enhanced interaction handling for better user experience.
 - **Transform Operations**: Drag, resize, rotate with intuitive handles
 - **Multi-Selection**: Select and manipulate multiple items simultaneously
 - **Layer Management**: Z-index control for proper layering
@@ -55,8 +55,8 @@ Below are real examples of what you can build with StackBoardPlus:
 
 <p align="center">
   <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/svg.gif?raw=true" alt="SVG Handling" width="250"/>
-  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/draw_feature.gif?raw=true" alt="SVG Handling" width="250"/>
-  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/shape.gif?raw=true" alt="SVG Handling" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/draw_feature.gif?raw=true" alt="Draw on Board" width="250"/>
+  <img src="https://github.com/M4DGENIUS0/stack_board_plus/blob/main/example/assets/readme/shape.gif?raw=true" alt="Add Shapes" width="250"/>
 </p>
 
 
@@ -81,7 +81,7 @@ Add StackBoardPlus to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  stack_board_plus: ^0.0.5
+  stack_board_plus: ^0.0.6
 ```
 OR
 ```yaml
@@ -132,8 +132,12 @@ class _MyCanvasAppState extends State<MyCanvasApp> {
 
 Check out the comprehensive examples in the `example/` directory:
 
-- **Basic Demo** (`main.dart`): Professional interface with all item types of tools
+- **Professional Demo** (`main.dart`): Clean, modular interface with all item types and tools
+- **Modular Architecture**: Organized into `models/`, `pages/`, `dialogs/`, `widgets/`, `mixins/`, and `utils/` for easy debugging and maintenance
 - **Developer Guide** (`DEVELOPER_GUIDE.md`): Technical documentation
+- **Reorganization Guide** (`REORGANIZATION_README.md`): Details about the new modular structure
+
+**New in v0.0.6**: The example app has been completely refactored from a single 3311-line file into a clean, maintainable architecture that makes debugging and development much easier!
 
 To run the example:
 

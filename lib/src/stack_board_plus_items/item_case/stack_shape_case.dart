@@ -3,6 +3,7 @@ import 'package:stack_board_plus/stack_board_plus.dart';
 
 /// Signature for custom editor builder
 /// Passes the current shape item and a callback to update it
+/// This can return any widget or trigger any UI pattern (dialogs, bottom sheets, etc.)
 typedef ShapeEditorBuilder = Widget Function(
   BuildContext context,
   StackShapeItem item,
@@ -47,11 +48,9 @@ class _StackShapeCaseState extends State<StackShapeCase> {
 
   void _onDoubleTap() {
     if (widget.customEditorBuilder != null) {
-      showDialog(
-        context: context,
-        builder: (context) => widget.customEditorBuilder!(context, _item, _updateItem),
-      );
-    }
+      widget.customEditorBuilder!(context, _item, _updateItem);
+      return;
+    } 
   }
 
   @override

@@ -41,6 +41,7 @@ class StackBoardPlus extends StatelessWidget {
     this.actionsBuilder,
     this.borderBuilder,
     this.customActionsBuilder,
+    this.backgroundElevation,
   }) : super(key: key);
 
   final StackBoardPlusController? controller;
@@ -88,7 +89,11 @@ class StackBoardPlus extends StatelessWidget {
   /// * border builder
   final Widget Function(StackItemStatus operatState)? borderBuilder;
 
+  /// * custom actions builder
   final List<Widget> Function(StackItem<StackItemContent> item, BuildContext context)? customActionsBuilder;
+
+  /// * background elevation
+  final double? backgroundElevation;
 
   StackBoardPlusController get _controller =>
       controller ?? StackBoardPlusController.def();
@@ -101,21 +106,22 @@ class StackBoardPlus extends StatelessWidget {
       child: GestureDetector(
         onTap: () => _controller.unSelectAll(),
         behavior: HitTestBehavior.opaque,
-        child: ExBuilder<StackConfig>(
-          valueListenable: _controller,
-          shouldRebuild: (StackConfig p, StackConfig n) =>
-              p.indexMap != n.indexMap,
-          builder: (StackConfig sc) {
-            return Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                const SizedBox.expand(),
-                if (background != null) background!,
-                for (final StackItem<StackItemContent> item in sc.data)
-                  _itemBuilder(item),
-              ],
-            );
-          },
+        child: Material(
+          elevation: backgroundElevation ?? 0,
+          child: ValueListenableBuilder<StackConfig>(
+            valueListenable: _controller,
+            builder: (context, sc, child) {
+              return Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  const SizedBox.expand(),
+                  if (background != null) background!,
+                  for (final StackItem<StackItemContent> item in sc.data)
+                    _itemBuilder(item),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

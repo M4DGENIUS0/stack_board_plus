@@ -306,7 +306,10 @@ class _StackItemCaseState extends State<StackItemCase> {
                     (item.status != StackItemStatus.idle
                         ? _caseStyle(context).buttonSize * 1.5
                         : 0)),
-            child: Transform.rotate(angle: item.angle, child: c),
+            child: Transform.rotate(
+              angle: item.angle, 
+              child: RepaintBoundary(child: c),
+            ),
           ),
         );
       },
@@ -501,6 +504,20 @@ class _StackItemCaseState extends State<StackItemCase> {
           (StackItem<StackItemContent> p, StackItem<StackItemContent> n) =>
               p.size != n.size || p.status != n.status,
       childBuilder: (StackItem<StackItemContent> item, Widget c) {
+        // Apply background elevation if the item has boxShadow property
+        Widget wrappedContent = c;
+        if (item is StackDrawItem && item.boxShadow != null) {
+          wrappedContent = Container(
+            decoration: BoxDecoration(
+              boxShadow: item.boxShadow,
+            ),
+            child: c,
+          );
+        }
+        
+        // Ensure the content maintains its visual properties during transforms
+        wrappedContent = RepaintBoundary(child: wrappedContent);
+        
         return Padding(
             padding: item.status == StackItemStatus.idle
                 ? EdgeInsets.zero
@@ -509,7 +526,7 @@ class _StackItemCaseState extends State<StackItemCase> {
                     style.buttonSize * 1.5,
                     style.buttonSize / 2,
                     style.buttonSize * 1.5),
-            child: SizedBox.fromSize(size: item.size, child: c));
+            child: SizedBox.fromSize(size: item.size, child: wrappedContent));
       },
       child: content,
     );

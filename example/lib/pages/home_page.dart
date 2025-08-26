@@ -105,8 +105,12 @@ class _HomePageState extends State<HomePage>
       builder: (context) => TextCustomizationDialog(
         item: item,
         onSave: (updatedContent) {
-          // Use the new method that preserves position and properties
-          _boardController.updateTextItemContent(item.id, updatedContent);
+          setState(() {
+            // Create a new item with updated content
+            final updatedItem = item.copyWith(content: updatedContent);
+            _boardController.removeById(item.id);
+            _boardController.addItem(updatedItem);
+          });
         },
       ),
     );

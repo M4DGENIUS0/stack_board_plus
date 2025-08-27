@@ -184,7 +184,11 @@ class _HomePageState extends State<HomePage>
             end: Alignment.bottomCenter,
           ),
         ),
-        child: StackBoardPlus(
+        child: Center(
+          child: SizedBox(
+            width: backgroundWidth,
+            height: backgroundHeight,
+            child: StackBoardPlus(
           onDel: _onDel,
           controller: _boardController,
           caseStyle: CaseStyle(
@@ -201,13 +205,13 @@ class _HomePageState extends State<HomePage>
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black.withOpacity(0.1),
+                  //     blurRadius: 8,
+                  //     offset: const Offset(0, 4),
+                  //   ),
+                  // ],
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -222,13 +226,13 @@ class _HomePageState extends State<HomePage>
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black.withOpacity(0.15),
+                  //     blurRadius: 10,
+                  //     offset: const Offset(0, 4),
+                  //   ),
+                  // ],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
@@ -242,13 +246,13 @@ class _HomePageState extends State<HomePage>
                 decoration: BoxDecoration(
                   color: item.content?.color,
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.black.withOpacity(0.2),
+                  //     blurRadius: 8,
+                  //     offset: const Offset(0, 4),
+                  //   ),
+                  // ],
                 ),
               );
             } else if (item is StackDrawItem) {
@@ -331,6 +335,8 @@ class _HomePageState extends State<HomePage>
                 ),
             ];
           },
+            ),
+          ),
         ),
       ),
       bottomNavigationBar: Container(

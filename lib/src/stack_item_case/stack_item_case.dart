@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:stack_board_plus/stack_board_plus.dart';
 // Add this import for the dialog
-
+/// This is the main class for the stack item case
+/// It is used to wrap the stack item and provide the functions of the stack item
+/// It is the core of the stack board plus
 /// * Operate box
 /// * Used to wrap child widgets to provide functions of operate box
 /// * 1. Drag
@@ -143,7 +145,11 @@ class _StackItemCaseState extends State<StackItemCase> {
     }
 
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    centerPoint = renderBox.localToGlobal(Offset.zero);
+    
+    // Use the widget's visual center (in global coordinates) as the pivot
+    // Use the widget's visual center (in global coordinates) as the pivot
+    centerPoint = renderBox
+        .localToGlobal(Offset(renderBox.size.width / 2, renderBox.size.height / 2));
     startGlobalPoint = details.globalPosition;
     startOffset = item.offset;
     startSize = item.size;
@@ -202,10 +208,11 @@ class _StackItemCaseState extends State<StackItemCase> {
 
     final double minSize = _minSize(context);
 
+    // Compute scale based on distances in the same (global) coordinate space
     final double originalDistance =
-        _caculateDistance(startGlobalPoint, startOffset);
+        _caculateDistance(startGlobalPoint, centerPoint);
     final double newDistance =
-        _caculateDistance(dud.globalPosition, startOffset);
+        _caculateDistance(dud.globalPosition, centerPoint);
     final double scale = newDistance / originalDistance;
 
     final double w = startSize.width * scale;

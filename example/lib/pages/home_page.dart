@@ -189,6 +189,7 @@ class _HomePageState extends State<HomePage>
             width: backgroundWidth,
             height: backgroundHeight,
             child: StackBoardPlus(
+          elevation: backgroundElevation,
           onDel: _onDel,
           controller: _boardController,
           caseStyle: CaseStyle(

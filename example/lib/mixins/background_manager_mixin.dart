@@ -15,6 +15,7 @@ mixin BackgroundManagerMixin<T extends StatefulWidget> on State<T> {
   File? backgroundImage;
   double backgroundWidth = 800.0;
   double backgroundHeight = 600.0;
+  double backgroundElevation = 1.0;
   BoxFit backgroundFit = BoxFit.cover;
   bool useGradient = true;  // Start with gradient as default
   bool useImage = false;
@@ -29,6 +30,7 @@ mixin BackgroundManagerMixin<T extends StatefulWidget> on State<T> {
         backgroundImage: backgroundImage,
         backgroundWidth: backgroundWidth,
         backgroundHeight: backgroundHeight,
+        backgroundElevation: backgroundElevation,
         backgroundFit: backgroundFit,
         useGradient: useGradient,
         useImage: useImage,
@@ -38,6 +40,7 @@ mixin BackgroundManagerMixin<T extends StatefulWidget> on State<T> {
           File? image,
           double width,
           double height,
+          double elevation,
           BoxFit fit,
           bool useGradient,
           bool useImage,
@@ -48,6 +51,7 @@ mixin BackgroundManagerMixin<T extends StatefulWidget> on State<T> {
             backgroundImage = image;
             backgroundWidth = width;
             backgroundHeight = height;
+            backgroundElevation = elevation;
             backgroundFit = fit;
             this.useGradient = useGradient;
             this.useImage = useImage;

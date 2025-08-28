@@ -12,7 +12,8 @@ class BackgroundEditorDialog extends StatefulWidget {
   final BoxFit backgroundFit;
   final bool useGradient;
   final bool useImage;
-  final Function(Color, Gradient?, File?, double, double, BoxFit, bool, bool) onSave;
+  final double backgroundElevation;
+  final Function(Color, Gradient?, File?, double, double, double, BoxFit, bool, bool) onSave;
 
   const BackgroundEditorDialog({
     Key? key,
@@ -24,6 +25,7 @@ class BackgroundEditorDialog extends StatefulWidget {
     required this.backgroundFit,
     required this.useGradient,
     required this.useImage,
+    this.backgroundElevation = 1.0,
     required this.onSave,
   }) : super(key: key);
 
@@ -37,6 +39,7 @@ class _BackgroundEditorDialogState extends State<BackgroundEditorDialog> {
   late File? _selectedImage;
   late double _width;
   late double _height;
+  late double _elevation;
   late BoxFit _fit;
   late bool _useGradient;
   late bool _useImage;
@@ -50,6 +53,7 @@ class _BackgroundEditorDialogState extends State<BackgroundEditorDialog> {
     _selectedImage = widget.backgroundImage;
     _width = widget.backgroundWidth;
     _height = widget.backgroundHeight;
+    _elevation = widget.backgroundElevation;
     _fit = widget.backgroundFit;
     _useGradient = widget.useGradient;
     _useImage = widget.useImage;
@@ -431,6 +435,18 @@ class _BackgroundEditorDialogState extends State<BackgroundEditorDialog> {
         ),
         const SizedBox(height: 5),
 
+        // Elevation Slider
+        const Text('Canvas Elevation', style: TextStyle(fontWeight: FontWeight.bold)),
+        Slider(
+          value: _elevation,
+          min: 0,
+          max: 24,
+          divisions: 24,
+          label: _elevation.toStringAsFixed(0),
+          onChanged: (value) => setState(() => _elevation = value),
+        ),
+        const SizedBox(height: 5),
+
         // Preset Sizes
         const Text('Preset Sizes', style: TextStyle(fontWeight: FontWeight.bold)),
         Wrap(
@@ -523,6 +539,7 @@ class _BackgroundEditorDialogState extends State<BackgroundEditorDialog> {
       _selectedImage,
       _width,
       _height,
+      _elevation,
       _fit,
       _useGradient,
       _useImage,

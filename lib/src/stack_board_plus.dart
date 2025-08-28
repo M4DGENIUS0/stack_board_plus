@@ -41,6 +41,7 @@ class StackBoardPlus extends StatelessWidget {
     this.actionsBuilder,
     this.borderBuilder,
     this.customActionsBuilder,
+    this.elevation = 1.0,
   }) : super(key: key);
 
   final StackBoardPlusController? controller;
@@ -90,6 +91,10 @@ class StackBoardPlus extends StatelessWidget {
 
   final List<Widget> Function(StackItem<StackItemContent> item, BuildContext context)? customActionsBuilder;
 
+  /// * elevation for the whole canvas container
+  /// defaults to 1.0
+  final double elevation;
+
   StackBoardPlusController get _controller =>
       controller ?? StackBoardPlusController.def();
 
@@ -98,24 +103,27 @@ class StackBoardPlus extends StatelessWidget {
     return StackBoardPlusConfig(
       controller: _controller,
       caseStyle: caseStyle,
-      child: GestureDetector(
-        onTap: () => _controller.unSelectAll(),
-        behavior: HitTestBehavior.opaque,
-        child: ExBuilder<StackConfig>(
-          valueListenable: _controller,
-          shouldRebuild: (StackConfig p, StackConfig n) =>
-              p.indexMap != n.indexMap,
-          builder: (StackConfig sc) {
-            return Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                const SizedBox.expand(),
-                if (background != null) background!,
-                for (final StackItem<StackItemContent> item in sc.data)
-                  _itemBuilder(item),
-              ],
-            );
-          },
+      child: Material(
+        elevation: elevation,
+        child: GestureDetector(
+          onTap: () => _controller.unSelectAll(),
+          behavior: HitTestBehavior.opaque,
+          child: ExBuilder<StackConfig>(
+            valueListenable: _controller,
+            shouldRebuild: (StackConfig p, StackConfig n) =>
+                p.indexMap != n.indexMap,
+            builder: (StackConfig sc) {
+              return Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  const SizedBox.expand(),
+                  if (background != null) background!,
+                  for (final StackItem<StackItemContent> item in sc.data)
+                    _itemBuilder(item),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

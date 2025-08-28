@@ -20,6 +20,78 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> 
     with BackgroundManagerMixin, StackItemManagerMixin {
   late StackBoardPlusController _boardController;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Widget _buildLayerPreview(StackItem<StackItemContent> item) {
+    const double size = 36;
+    if (item is StackTextItem) {
+      final String text = (item.content?.data ?? 'Text').toString();
+      return Container(
+        width: size * 2,
+        height: size,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+      );
+    }
+    if (item is StackImageItem) {
+      final content = item.content;
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: content?.svgWidget ?? (content?.image != null
+                ? Image(image: content!.image!)
+                : const Icon(Icons.image, size: size)),
+          ),
+        ),
+      );
+    }
+    if (item is ColorStackItem) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: item.content?.color ?? Colors.grey,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: Colors.black12),
+        ),
+      );
+    }
+    if (item is StackDrawItem) {
+      return const Icon(Icons.brush, size: 20);
+    }
+    if (item is StackShapeItem) {
+      return const Icon(Icons.category, size: 20);
+    }
+    return const Icon(Icons.layers);
+  }
+
+  String _layerLabel(StackItem<StackItemContent> item) {
+    if (item is StackTextItem) {
+      final String text = (item.content?.data ?? 'Text').toString();
+      return text.isEmpty ? 'Text' : text;
+    }
+    if (item is StackImageItem) {
+      final c = item.content;
+      return c?.assetName ?? c?.url ?? c?.file?.path.split('/').last ?? 'Image';
+    }
+    if (item is ColorStackItem) {
+      final Color color = item.content?.color ?? Colors.grey;
+      String hex = color.value.toRadixString(16).padLeft(8, '0').toUpperCase();
+      return '#${hex.substring(2)}';
+    }
+    if (item is StackDrawItem) return 'Drawing';
+    if (item is StackShapeItem) return 'Shape';
+    return item.runtimeType.toString();
+  }
 
   @override
   void initState() {
@@ -142,6 +214,7 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
@@ -169,12 +242,98 @@ class _HomePageState extends State<HomePage>
             tooltip: 'Background Settings',
           ),
           IconButton(
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+            icon: const Icon(Icons.layers, color: Colors.white),
+            tooltip: 'Layers',
+          ),
+          IconButton(
             onPressed: () => _boardController.clear(),
             icon: const Icon(Icons.clear_all, color: Colors.white),
             tooltip: 'Clear All',
           ),
           const SizedBox(width: 8),
         ],
+      ),
+      endDrawer: Drawer(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Text(
+                  'Layers',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ValueListenableBuilder<StackConfig>(
+                  valueListenable: _boardController,
+                  builder: (context, stackConfig, _) {
+                    final List<StackItem<StackItemContent>> items = List.of(stackConfig.data);
+                    // Show top-most first
+                    final List<StackItem<StackItemContent>> ordered = items.reversed.toList();
+                    return ListView.separated(
+                      itemCount: ordered.length,
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final StackItem<StackItemContent> item = ordered[index];
+                        final int actualIndex = items.indexOf(item); // 0 = bottom, last = top
+                        final bool isTop = actualIndex == items.length - 1;
+                        final bool isBottom = actualIndex == 0;
+                        return ListTile(
+                          dense: true,
+                          leading: _buildLayerPreview(item),
+                          title: Text(_layerLabel(item), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          subtitle: Text(item.runtimeType.toString(), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'To Bottom',
+                                icon: const Icon(Icons.vertical_align_bottom),
+                                onPressed: () {
+                                  _boardController.moveItemToBottom(item.id);
+                                },
+                              ),
+                              IconButton(
+                                tooltip: 'Down',
+                                icon: const Icon(Icons.arrow_downward),
+                                onPressed: isBottom ? null : () {
+                                  _boardController.moveItemBackward(item.id);
+                                },
+                              ),
+                              IconButton(
+                                tooltip: 'Up',
+                                icon: const Icon(Icons.arrow_upward),
+                                onPressed: isTop ? null : () {
+                                  _boardController.moveItemForward(item.id);
+                                },
+                              ),
+                              IconButton(
+                                tooltip: 'To Top',
+                                icon: const Icon(Icons.vertical_align_top),
+                                onPressed: () {
+                                  _boardController.moveItemOnTop(item.id);
+                                },
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            // Select without changing z-order
+                            _boardController.unSelectAll();
+                            _boardController.setItemStatus(item.id, StackItemStatus.selected);
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(

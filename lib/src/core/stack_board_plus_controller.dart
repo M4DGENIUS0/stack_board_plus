@@ -235,6 +235,89 @@ class StackBoardPlusController extends SafeValueNotifier<StackConfig> {
     value = value.copyWith(data: data, indexMap: _newIndexMap);
   }
 
+  /// * move item to bottom (index 0)
+  void moveItemToBottom(String id, {bool force = false}) {
+    if (!_indexMap.containsKey(id)) return;
+
+    final List<StackItem<StackItemContent>> data =
+        List<StackItem<StackItemContent>>.from(innerData);
+
+    final StackItem<StackItemContent> item = data[_indexMap[id]!];
+
+    if (!item.lockZOrder || force) {
+      data.removeAt(_indexMap[id]!);
+      data.insert(0, item);
+    }
+
+    _reorder(data);
+
+    value = value.copyWith(data: data, indexMap: _newIndexMap);
+  }
+
+  /// * move item one step forward (toward top)
+  void moveItemForward(String id, {bool force = false}) {
+    if (!_indexMap.containsKey(id)) return;
+
+    final List<StackItem<StackItemContent>> data =
+        List<StackItem<StackItemContent>>.from(innerData);
+
+    final int currentIndex = _indexMap[id]!;
+    final StackItem<StackItemContent> item = data[currentIndex];
+    if (currentIndex >= data.length - 1) return; // already at top
+
+    if (!item.lockZOrder || force) {
+      data.removeAt(currentIndex);
+      data.insert(currentIndex + 1, item);
+    }
+
+    _reorder(data);
+
+    value = value.copyWith(data: data, indexMap: _newIndexMap);
+  }
+
+  /// * move item one step backward (toward bottom)
+  void moveItemBackward(String id, {bool force = false}) {
+    if (!_indexMap.containsKey(id)) return;
+
+    final List<StackItem<StackItemContent>> data =
+        List<StackItem<StackItemContent>>.from(innerData);
+
+    final int currentIndex = _indexMap[id]!;
+    final StackItem<StackItemContent> item = data[currentIndex];
+    if (currentIndex <= 0) return; // already at bottom
+
+    if (!item.lockZOrder || force) {
+      data.removeAt(currentIndex);
+      data.insert(currentIndex - 1, item);
+    }
+
+    _reorder(data);
+
+    value = value.copyWith(data: data, indexMap: _newIndexMap);
+  }
+
+  /// * move item to a specific index (0..length-1)
+  void moveItemToIndex(String id, int newIndex, {bool force = false}) {
+    if (!_indexMap.containsKey(id)) return;
+
+    final List<StackItem<StackItemContent>> data =
+        List<StackItem<StackItemContent>>.from(innerData);
+
+    if (newIndex < 0 || newIndex >= data.length) return;
+
+    final int currentIndex = _indexMap[id]!;
+    final StackItem<StackItemContent> item = data[currentIndex];
+
+    if (!item.lockZOrder || force) {
+      data.removeAt(currentIndex);
+      data.insert(newIndex, item);
+    }
+
+    _reorder(data);
+
+    value = value.copyWith(data: data, indexMap: _newIndexMap);
+  }
+
   /// * unselect all items
   void unSelectAll() {
     final List<StackItem<StackItemContent>> data =

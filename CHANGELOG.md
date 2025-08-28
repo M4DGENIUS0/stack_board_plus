@@ -1,3 +1,18 @@
+## 0.0.7
+
+* **Bug Fixes**
+  - Fixed item position jump when updating an item; preserves original position/size/rotation reliably in `StackItemCase` interactions.
+  - Fixed background resizing behavior in the example so width/height updates apply correctly.
+  - Removed stray shadows from item cases in the example for a cleaner default look.
+
+* **New**
+  - Added `elevation` to `StackBoardPlus` to control the canvas Material elevation. Default is `1.0`.
+  - Example updated with Background Settings slider to adjust canvas elevation live.
+  - Added layering APIs in controller:
+    - `moveItemOnTop`, `moveItemToBottom`, `moveItemForward`, `moveItemBackward`, `moveItemToIndex`.
+  - Example now includes a Layers drawer showing a live, visual layer list with per-layer actions (to top/bottom, up/down) and item previews (text, image, color, drawing, shape).
+
+
 ## 0.0.6
 
 * **Bug Fixes**

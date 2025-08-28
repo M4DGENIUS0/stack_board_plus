@@ -29,7 +29,7 @@
 - **Shape Item Support**: Add geometric shapes (rectangle, circle, rounded rectangle, line, star, polygon, heart, half-moon) with customizable fill, stroke, opacity, tilt, and more. Enhanced interaction handling for better user experience.
 - **Transform Operations**: Drag, resize, rotate with intuitive handles
 - **Multi-Selection**: Select and manipulate multiple items simultaneously
-- **Layer Management**: Z-index control for proper layering
+- **Layer Management**: Z-index control for proper layering, plus visual Layers drawer in example
 - **Grid System**: Optional snap-to-grid functionality
 - **Export Capabilities**: Export canvas to various formats
 - **Professional UI**: Modern, color-coded handles with visual feedback
@@ -81,7 +81,7 @@ Add StackBoardPlus to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  stack_board_plus: ^0.0.6
+  stack_board_plus: ^0.0.7
 ```
 OR
 ```yaml
@@ -114,11 +114,7 @@ class _MyCanvasAppState extends State<MyCanvasApp> {
     return Scaffold(
       body: StackBoardPlus(
         controller: _controller,
-        config: const StackBoardPlusConfig(
-          enableMultiSelect: true,
-          showGrid: false,          // Disable grid for free movement
-          enableSnapToGrid: false,  // Disable snapping for smooth movement
-        ),
+        elevation: 6.0, 
         onItemSelected: (item) {
           print('Selected: ${item.id}');
         },
@@ -137,7 +133,6 @@ Check out the comprehensive examples in the `example/` directory:
 - **Developer Guide** (`DEVELOPER_GUIDE.md`): Technical documentation
 - **Reorganization Guide** (`REORGANIZATION_README.md`): Details about the new modular structure
 
-**New in v0.0.6**: The example app has been completely refactored from a single 3311-line file into a clean, maintainable architecture that makes debugging and development much easier!
 
 To run the example:
 
@@ -262,6 +257,8 @@ StackBoardPlusConfig(
 ## Advanced Features
 
 - **Layer Management**: Control item z-index and stacking order
+  - Controller APIs: `moveItemOnTop`, `moveItemToBottom`, `moveItemForward`, `moveItemBackward`, `moveItemToIndex`
+  - Example Layers drawer with previews and quick actions
 - **Export System**: Export canvas to PNG, SVG, or custom formats
 - **Undo/Redo**: Built-in history management
 - **Custom Items**: Create your own interactive elements
@@ -285,7 +282,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - 📋 [Issues](https://github.com/M4DGENIUS0/stack_board_plus/issues) - Report bugs or request features
-- 📖 [Documentation](https://github.com/M4DGENIUS0/stack_board_plus/wiki) - Comprehensive guides
 - 💬 [Discussions](https://github.com/M4DGENIUS0/stack_board_plus/discussions) - Community support
 
 ## Changelog
